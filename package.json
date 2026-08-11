@@ -1,0 +1,14 @@
+{
+  "name": "kissanconnect",
+  "version": "0.1.0",
+  "private": true,
+  "description": "KisanConnect — Farmer-to-Buyer Agricultural Marketplace",
+  "scripts": {
+    "client": "npm --prefix client run dev",
+    "server": "npm --prefix server run dev",
+    "dev": "concurrently \"npm run client\" \"npm run server\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
