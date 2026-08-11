@@ -6,6 +6,7 @@ import dotenv from 'dotenv'
 import connectDB from './config/db.js'
 import notFound from './middleware/notFoundMiddleware.js'
 import errorHandler from './middleware/errorMiddleware.js'
+import authRoutes from './routes/authRoutes.js'
 
 dotenv.config()
 
@@ -26,8 +27,8 @@ app.get('/api/health', (req, res) => {
   })
 })
 
-// API routes (registered here as they are built in later phases)
-// app.use('/api/users', userRoutes)
+// API routes
+app.use('/api/auth', authRoutes)
 // app.use('/api/products', productRoutes)
 // app.use('/api/orders', orderRoutes)
 
