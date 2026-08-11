@@ -9,6 +9,7 @@
     "dev": "concurrently \"npm run client\" \"npm run server\""
   },
   "devDependencies": {
-    "concurrently": "^9.1.0"
+    "concurrently": "^9.1.0",
+    "pptxgenjs": "^4.0.1"
   }
 }

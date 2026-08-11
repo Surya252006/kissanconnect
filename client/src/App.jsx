@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext.jsx'
 import Navbar from './components/layout/Navbar.jsx'
+import Footer from './components/layout/Footer.jsx'
 import ProtectedRoute from './components/common/ProtectedRoute.jsx'
 
 import Home from './pages/home/Home.jsx'
@@ -24,7 +25,7 @@ import Verification from './pages/admin/Verification.jsx'
 function App() {
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
+      <div className="min-h-screen bg-stone-50 flex flex-col font-sans text-slate-900">
         <Navbar />
         <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 md:p-8">
           <Routes>
@@ -106,6 +107,7 @@ function App() {
             />
           </Routes>
         </main>
+        <Footer />
       </div>
     </AuthProvider>
   )

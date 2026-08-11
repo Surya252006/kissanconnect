@@ -1,23 +1,24 @@
 import { useState, useEffect } from 'react'
 import api from '../../services/api.js'
 import { getProductImageUrl } from '../../utils/imageHelper.js'
+import { StatusBadge } from '../../components/ui/Badge.jsx'
+import { EmptyState } from '../../components/ui/EmptyState.jsx'
+import { TableSkeleton } from '../../components/ui/LoadingSkeleton.jsx'
 import {
   PackageCheck,
   User,
   MapPin,
   Clock,
-  CheckCircle2,
   Truck,
   AlertCircle,
   Phone,
-  Mail,
-  ChevronDown,
+  Sparkles,
 } from 'lucide-react'
 
 const ORDER_STATUS_OPTIONS = ['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED']
 const LOGISTICS_STATUS_OPTIONS = ['PENDING', 'PACKED', 'PICKED_UP', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED']
 
-const FarmerOrders = () => {
+export const FarmerOrders = () => {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -78,42 +79,45 @@ const FarmerOrders = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-8 pb-12">
       {/* Header */}
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-        <h1 className="text-2xl font-bold text-slate-800">Customer Orders Dashboard</h1>
-        <p className="text-sm text-slate-500 mt-1">Manage orders placed by buyers for your listed farm produce</p>
+      <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <div className="inline-flex items-center space-x-2 text-xs font-bold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full mb-1">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Fulfillment Center</span>
+          </div>
+          <h1 className="text-3xl font-black text-slate-900">Customer Orders Dashboard</h1>
+          <p className="text-sm text-slate-500 mt-1 font-medium">
+            Manage incoming purchase orders, update shipping progress, and track deliveries.
+          </p>
+        </div>
+
+        <div className="bg-emerald-50 text-emerald-900 px-4 py-2 rounded-2xl border border-emerald-200 text-xs font-black">
+          {orders.length} Total Orders Received
+        </div>
       </div>
 
       {/* Loading / Error / Orders List */}
       {loading ? (
-        <div className="space-y-4">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="bg-white rounded-2xl p-6 border border-slate-200 animate-pulse space-y-4">
-              <div className="h-6 bg-slate-200 rounded w-1/3"></div>
-              <div className="h-20 bg-slate-200 rounded"></div>
-            </div>
-          ))}
-        </div>
+        <TableSkeleton rows={4} />
       ) : error ? (
-        <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-xl text-center space-y-3">
+        <div className="bg-red-50 border border-red-200 text-red-700 p-8 rounded-3xl text-center space-y-3">
           <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
-          <p className="font-semibold">{error}</p>
+          <p className="font-bold">{error}</p>
           <button
             onClick={fetchFarmerOrders}
-            className="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg text-sm"
+            className="bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow"
           >
             Retry Loading
           </button>
         </div>
       ) : orders.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-2xl p-12 text-center space-y-4">
-          <PackageCheck className="w-16 h-16 text-slate-300 mx-auto" />
-          <h3 className="text-xl font-bold text-slate-700">No Customer Orders Received</h3>
-          <p className="text-slate-500 text-sm max-w-md mx-auto">
-            You don't have any customer orders at the moment. As soon as buyers place orders for your produce, they will appear here!
-          </p>
-        </div>
+        <EmptyState
+          icon={PackageCheck}
+          title="No Customer Orders Received Yet"
+          description="As soon as buyers, retailers, or wholesalers order your produce from the marketplace, their orders and delivery addresses will appear here."
+        />
       ) : (
         <div className="space-y-6">
           {orders.map((order) => {
@@ -131,65 +135,66 @@ const FarmerOrders = () => {
             return (
               <div
                 key={order._id}
-                className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden space-y-4"
+                className="bg-white rounded-3xl shadow-sm hover:shadow-md border border-slate-200 overflow-hidden transition-all duration-200"
               >
-                {/* Header */}
-                <div className="bg-slate-50 p-4 border-b border-slate-200 flex flex-wrap justify-between items-center text-xs text-slate-600 gap-2">
+                {/* Order Top Bar */}
+                <div className="bg-slate-50 p-4 sm:p-5 border-b border-slate-100 flex flex-wrap justify-between items-center text-xs text-slate-600 gap-2">
                   <div className="flex items-center space-x-3">
-                    <span className="font-bold text-slate-800">
-                      Order #{order._id.substring(order._id.length - 8).toUpperCase()}
+                    <span className="font-mono font-black text-slate-900 bg-white px-2.5 py-1 rounded-lg border border-slate-200">
+                      #{order._id.substring(order._id.length - 8).toUpperCase()}
                     </span>
-                    <span className="text-slate-400">•</span>
-                    <span className="flex items-center">
+                    <span className="flex items-center font-medium">
                       <Clock className="w-3.5 h-3.5 text-slate-400 mr-1" />
                       {formattedDate}
                     </span>
                   </div>
 
                   <div className="flex items-center space-x-2">
-                    <span className="text-xs font-bold text-slate-500 uppercase">Status:</span>
-                    <span className="font-bold text-slate-800">{order.status}</span>
+                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Status:</span>
+                    <StatusBadge status={order.status} />
+                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider ml-2">Logistics:</span>
+                    <StatusBadge status={order.logisticsStatus} />
                   </div>
                 </div>
 
                 {/* Body Content */}
-                <div className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
                   {/* Produce details */}
-                  <div className="flex items-start space-x-4 md:col-span-2">
+                  <div className="lg:col-span-8 flex items-start space-x-5">
                     <img
                       src={getProductImageUrl(product.image, item.name, product.category)}
                       alt={item.name}
-                      className="w-20 h-20 object-cover rounded-xl border border-slate-200 flex-shrink-0"
+                      className="w-24 h-24 object-cover rounded-2xl border border-slate-200 flex-shrink-0 shadow-inner"
                       onError={(e) => {
                         e.target.onerror = null
                         e.target.src = '/products/tomato.jpg'
                       }}
                     />
-                    <div className="space-y-1">
-                      <h3 className="font-bold text-slate-800 text-lg">{item.name}</h3>
-                      <p className="text-xs text-slate-600">
-                        Ordered: <strong>{item.quantity} {item.unit}</strong> @ ₹{item.price}/{item.unit}
+                    <div className="space-y-1.5 flex-1">
+                      <h3 className="font-black text-slate-900 text-lg">{item.name}</h3>
+                      <p className="text-xs text-slate-600 font-medium">
+                        Order Qty: <strong className="text-slate-900">{item.quantity} {item.unit}</strong> @ ₹{item.price}/{item.unit}
                       </p>
-                      <p className="text-sm font-extrabold text-emerald-700 pt-1">
-                        Total Order Amount: ₹{order.totalAmount}
+                      <p className="text-base font-black text-emerald-800 pt-0.5">
+                        Total Amount: ₹{order.totalAmount}
                       </p>
 
                       {/* Buyer Details */}
                       <div className="pt-2 text-xs text-slate-600 space-y-1">
-                        <div className="flex items-center font-semibold text-slate-800">
-                          <User className="w-3.5 h-3.5 text-slate-400 mr-1" />
+                        <div className="flex items-center font-bold text-slate-800">
+                          <User className="w-3.5 h-3.5 text-emerald-600 mr-1.5" />
                           <span>Buyer: {buyer.name || 'Customer'}</span>
                         </div>
                         {buyer.phone && (
-                          <div className="flex items-center text-slate-500">
-                            <Phone className="w-3.5 h-3.5 text-slate-400 mr-1" />
+                          <div className="flex items-center text-slate-600 font-medium">
+                            <Phone className="w-3.5 h-3.5 text-slate-400 mr-1.5" />
                             <span>{buyer.phone}</span>
                           </div>
                         )}
                         {order.deliveryAddress && (
-                          <div className="flex items-center text-slate-500">
-                            <MapPin className="w-3.5 h-3.5 text-slate-400 mr-1" />
-                            <span>Deliver to: {order.deliveryAddress.fullAddress || order.deliveryAddress.city}</span>
+                          <div className="flex items-center text-slate-600 font-medium">
+                            <MapPin className="w-3.5 h-3.5 text-emerald-600 mr-1.5 flex-shrink-0" />
+                            <span className="truncate">Deliver to: {order.deliveryAddress.fullAddress || order.deliveryAddress.city}</span>
                           </div>
                         )}
                       </div>
@@ -197,27 +202,27 @@ const FarmerOrders = () => {
                   </div>
 
                   {/* Status Management Controls */}
-                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-4">
-                    <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                      Update Order & Logistics
+                  <div className="lg:col-span-4 bg-stone-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+                    <h4 className="text-xs font-black text-slate-700 uppercase tracking-wider">
+                      Fulfillment Controls
                     </h4>
 
                     {isCancelled ? (
-                      <div className="p-3 bg-red-100 text-red-800 font-bold text-xs rounded-lg text-center">
-                        Order Cancelled by Buyer
+                      <div className="p-3 bg-red-50 text-red-800 font-bold text-xs rounded-xl text-center border border-red-200">
+                        Order Cancelled
                       </div>
                     ) : (
-                      <>
+                      <div className="space-y-3">
                         {/* Order Status Selector */}
                         <div>
                           <label className="block text-[11px] font-bold text-slate-600 mb-1">
-                            Order Status
+                            Fulfillment Stage
                           </label>
                           <select
                             value={order.status}
                             disabled={updatingId === order._id || order.status === 'DELIVERED'}
                             onChange={(e) => handleUpdateStatus(order._id, e.target.value)}
-                            className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+                            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 shadow-sm"
                           >
                             {ORDER_STATUS_OPTIONS.map((st) => (
                               <option key={st} value={st}>
@@ -230,14 +235,14 @@ const FarmerOrders = () => {
                         {/* Logistics Status Selector */}
                         <div>
                           <label className="block text-[11px] font-bold text-slate-600 mb-1 flex items-center">
-                            <Truck className="w-3 h-3 text-emerald-600 mr-1" />
-                            <span>Logistics Stage</span>
+                            <Truck className="w-3.5 h-3.5 text-emerald-600 mr-1" />
+                            <span>Logistics Progress</span>
                           </label>
                           <select
                             value={order.logisticsStatus}
                             disabled={updatingId === order._id || order.status === 'DELIVERED'}
                             onChange={(e) => handleUpdateLogistics(order._id, e.target.value)}
-                            className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+                            className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 shadow-sm"
                           >
                             {LOGISTICS_STATUS_OPTIONS.map((lg) => (
                               <option key={lg} value={lg}>
@@ -246,7 +251,7 @@ const FarmerOrders = () => {
                             ))}
                           </select>
                         </div>
-                      </>
+                      </div>
                     )}
                   </div>
                 </div>

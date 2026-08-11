@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 import api from '../../services/api.js'
+import { StatusBadge, VerifiedBadge } from '../../components/ui/Badge.jsx'
+import { EmptyState } from '../../components/ui/EmptyState.jsx'
+import { TableSkeleton } from '../../components/ui/LoadingSkeleton.jsx'
 import {
   ShieldCheck,
   CheckCircle,
@@ -9,10 +12,10 @@ import {
   Package,
   AlertCircle,
   MapPin,
-  Tag,
+  Sparkles,
 } from 'lucide-react'
 
-const Verification = () => {
+export const Verification = () => {
   const [verifications, setVerifications] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -78,59 +81,44 @@ const Verification = () => {
     }
   }
 
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case 'PENDING':
-        return <span className="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-0.5 rounded-full">Pending Review</span>
-      case 'VERIFIED':
-        return <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center space-x-1"><CheckCircle className="w-3 h-3" /><span>Verified</span></span>
-      case 'REJECTED':
-        return <span className="bg-red-100 text-red-800 text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center space-x-1"><XCircle className="w-3 h-3" /><span>Rejected</span></span>
-      default:
-        return <span className="bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-0.5 rounded-full">{status}</span>
-    }
-  }
-
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-8 pb-12">
       {/* Header */}
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+      <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 flex items-center space-x-2">
-            <ShieldCheck className="w-6 h-6 text-emerald-600" />
-            <span>Produce & Farmer Verification</span>
+          <div className="inline-flex items-center space-x-2 text-xs font-bold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full mb-1">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Trust & Quality Authority</span>
+          </div>
+          <h1 className="text-3xl font-black text-slate-900 flex items-center space-x-2">
+            <span>Produce & Farmer Verification Queue</span>
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Review quality and identity verification requests for farmers and produce listings
+          <p className="text-sm text-slate-500 mt-1 font-medium">
+            Review quality benchmarks, GI tags, and farm credentials submitted by producers.
           </p>
+        </div>
+
+        <div className="bg-emerald-50 text-emerald-900 px-4 py-2 rounded-2xl border border-emerald-200 text-xs font-black">
+          {verifications.filter((v) => v.status === 'PENDING').length} Pending Audits
         </div>
       </div>
 
       {/* Loading / Error / Verification Table */}
       {loading ? (
-        <div className="space-y-4">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="bg-white rounded-2xl p-6 border border-slate-200 animate-pulse space-y-4">
-              <div className="h-6 bg-slate-200 rounded w-1/3"></div>
-              <div className="h-16 bg-slate-200 rounded"></div>
-            </div>
-          ))}
-        </div>
+        <TableSkeleton rows={4} />
       ) : error ? (
-        <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-xl text-center space-y-3">
+        <div className="bg-red-50 border border-red-200 text-red-700 p-8 rounded-3xl text-center space-y-3">
           <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
-          <p className="font-semibold">{error}</p>
+          <p className="font-bold">{error}</p>
         </div>
       ) : verifications.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-2xl p-12 text-center space-y-4">
-          <ShieldCheck className="w-16 h-16 text-slate-300 mx-auto" />
-          <h3 className="text-xl font-bold text-slate-700">No Verification Requests</h3>
-          <p className="text-slate-500 text-sm max-w-md mx-auto">
-            There are currently no pending or historical verification requests to review.
-          </p>
-        </div>
+        <EmptyState
+          icon={ShieldCheck}
+          title="No Verification Requests In Queue"
+          description="There are currently no pending or historical quality/identity audit requests to review."
+        />
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-6">
           {verifications.map((v) => {
             const userObj = v.userId || {}
             const prodObj = v.productId || {}
@@ -143,62 +131,62 @@ const Verification = () => {
             return (
               <div
                 key={v._id}
-                className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden"
+                className="bg-white rounded-3xl shadow-sm hover:shadow-md border border-slate-200 overflow-hidden transition-all duration-200"
               >
                 {/* Header */}
-                <div className="bg-slate-50 p-4 border-b border-slate-200 flex flex-wrap justify-between items-center text-xs text-slate-600 gap-2">
+                <div className="bg-slate-50 p-4 sm:p-5 border-b border-slate-100 flex flex-wrap justify-between items-center text-xs text-slate-600 gap-2">
                   <div className="flex items-center space-x-3">
-                    <span className="font-bold text-slate-800">
-                      Request #{v._id.substring(v._id.length - 8).toUpperCase()}
+                    <span className="font-mono font-black text-slate-900 bg-white px-2.5 py-1 rounded-lg border border-slate-200">
+                      #{v._id.substring(v._id.length - 8).toUpperCase()}
                     </span>
-                    <span className="text-slate-400">•</span>
-                    <span className="font-semibold uppercase px-2 py-0.5 rounded bg-slate-200 text-slate-800">
-                      {v.type}
+                    <span className="font-bold uppercase px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-200">
+                      {v.type} Audit
                     </span>
-                    <span className="text-slate-400">•</span>
-                    <span className="flex items-center">
+                    <span className="flex items-center font-medium">
                       <Clock className="w-3.5 h-3.5 text-slate-400 mr-1" />
                       {formattedDate}
                     </span>
                   </div>
 
-                  <div>{getStatusBadge(v.status)}</div>
+                  <div>
+                    <StatusBadge status={v.status} />
+                  </div>
                 </div>
 
                 {/* Body */}
-                <div className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
                   {/* Entity Details */}
                   <div className="md:col-span-2 space-y-2">
                     {v.type === 'PRODUCT' ? (
-                      <div>
+                      <div className="space-y-1">
                         <div className="flex items-center space-x-2">
-                          <Package className="w-4 h-4 text-emerald-600" />
-                          <h3 className="font-bold text-slate-800 text-base">{prodObj.name || 'Product Produce'}</h3>
+                          <Package className="w-5 h-5 text-emerald-600" />
+                          <h3 className="font-black text-slate-900 text-lg">{prodObj.name || 'Produce Item'}</h3>
                         </div>
-                        <p className="text-xs text-slate-500 mt-1">
-                          Category: <strong>{prodObj.category}</strong> • Price: <strong>₹{prodObj.price}</strong>
+                        <p className="text-xs text-slate-600 font-medium">
+                          Category: <strong className="text-slate-900">{prodObj.category}</strong> • Price: <strong className="text-slate-900">₹{prodObj.price}</strong>
                         </p>
                         {prodObj.location && (
-                          <p className="text-xs text-slate-500 flex items-center mt-0.5">
+                          <p className="text-xs text-slate-500 flex items-center font-medium">
                             <MapPin className="w-3.5 h-3.5 mr-1 text-slate-400" />
                             <span>{prodObj.location}</span>
                           </p>
                         )}
-                        <p className="text-xs text-slate-600 mt-1">
-                          Listed by Farmer: <strong>{userObj.name}</strong> ({userObj.phone || userObj.email})
+                        <p className="text-xs text-slate-600 pt-1 font-medium">
+                          Producer: <strong className="text-slate-900">{userObj.name}</strong> ({userObj.phone || userObj.email})
                         </p>
                       </div>
                     ) : (
-                      <div>
+                      <div className="space-y-1">
                         <div className="flex items-center space-x-2">
-                          <User className="w-4 h-4 text-emerald-600" />
-                          <h3 className="font-bold text-slate-800 text-base">{userObj.name}</h3>
+                          <User className="w-5 h-5 text-emerald-600" />
+                          <h3 className="font-black text-slate-900 text-lg">{userObj.name}</h3>
                         </div>
-                        <p className="text-xs text-slate-500 mt-1">
-                          Role: <strong>{userObj.role}</strong> • Email: <strong>{userObj.email}</strong>
+                        <p className="text-xs text-slate-600 font-medium">
+                          Role: <strong className="text-slate-900">{userObj.role}</strong> • Email: <strong className="text-slate-900">{userObj.email}</strong>
                         </p>
                         {userObj.location && (
-                          <p className="text-xs text-slate-500 flex items-center mt-0.5">
+                          <p className="text-xs text-slate-500 flex items-center font-medium">
                             <MapPin className="w-3.5 h-3.5 mr-1 text-slate-400" />
                             <span>{userObj.location}</span>
                           </p>
@@ -207,8 +195,8 @@ const Verification = () => {
                     )}
 
                     {v.remarks && (
-                      <p className="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-200 mt-2">
-                        <strong>Remarks:</strong> {v.remarks}
+                      <p className="text-xs text-slate-700 bg-stone-50 p-3 rounded-xl border border-slate-200 mt-2 font-medium">
+                        <strong>Farmer Notes:</strong> {v.remarks}
                       </p>
                     )}
                   </div>
@@ -220,23 +208,23 @@ const Verification = () => {
                         <button
                           onClick={() => handleApprove(v._id)}
                           disabled={processingId === v._id}
-                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-xl text-xs flex items-center justify-center space-x-1.5 transition-colors disabled:opacity-50"
+                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 transition-all shadow-sm hover:shadow disabled:opacity-50"
                         >
                           <CheckCircle className="w-4 h-4" />
-                          <span>Approve & Verify</span>
+                          <span>Approve & Certify</span>
                         </button>
                         <button
                           onClick={() => setRejectingId(v._id)}
                           disabled={processingId === v._id}
-                          className="w-full bg-red-50 hover:bg-red-100 text-red-700 font-bold py-2 px-4 rounded-xl text-xs flex items-center justify-center space-x-1.5 transition-colors border border-red-200"
+                          className="w-full bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 transition-colors border border-rose-200"
                         >
                           <XCircle className="w-4 h-4" />
-                          <span>Reject Request</span>
+                          <span>Reject Audit</span>
                         </button>
                       </>
                     ) : (
-                      <div className="text-xs text-slate-400 text-center font-medium">
-                        Processed as {v.status}
+                      <div className="text-xs text-slate-500 text-center font-bold bg-slate-50 py-3 rounded-2xl border border-slate-200">
+                        Audit Finalized: {v.status}
                       </div>
                     )}
                   </div>
@@ -244,16 +232,16 @@ const Verification = () => {
 
                 {/* Reject Modal / Inline Form */}
                 {rejectingId === v._id && (
-                  <div className="p-4 bg-red-50/70 border-t border-red-200 space-y-3">
-                    <p className="text-xs font-bold text-red-800">
-                      Confirm Rejection: Add optional rejection feedback for the user
+                  <div className="p-5 bg-rose-50/70 border-t border-rose-200 space-y-3">
+                    <p className="text-xs font-bold text-rose-900">
+                      Reason for Rejection (Feedback for Producer):
                     </p>
                     <input
                       type="text"
                       value={remarks}
                       onChange={(e) => setRemarks(e.target.value)}
-                      placeholder="e.g. Produce documentation incomplete or quality standard not met"
-                      className="w-full px-3 py-1.5 bg-white border border-red-300 rounded-lg text-xs outline-none focus:ring-2 focus:ring-red-500 text-slate-800"
+                      placeholder="e.g. Incomplete crop documentation or non-compliant harvest grade"
+                      className="w-full px-3.5 py-2 bg-white border border-rose-300 rounded-xl text-xs outline-none focus:ring-2 focus:ring-rose-500 text-slate-800 font-medium"
                     />
                     <div className="flex justify-end space-x-2">
                       <button
@@ -261,14 +249,14 @@ const Verification = () => {
                           setRejectingId(null)
                           setRemarks('')
                         }}
-                        className="px-3 py-1 bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold"
+                        className="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-semibold"
                       >
                         Cancel
                       </button>
                       <button
                         onClick={() => handleReject(v._id)}
                         disabled={processingId === v._id}
-                        className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-bold"
+                        className="px-4 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-sm"
                       >
                         Confirm Rejection
                       </button>

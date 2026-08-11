@@ -1,23 +1,24 @@
 import { useState, useEffect } from 'react'
 import api from '../../services/api.js'
 import { useAuth } from '../../context/AuthContext.jsx'
+import { TrendBadge } from '../../components/ui/Badge.jsx'
+import { EmptyState } from '../../components/ui/EmptyState.jsx'
+import { ProductSkeleton } from '../../components/ui/LoadingSkeleton.jsx'
 import {
   TrendingUp,
-  TrendingDown,
-  Minus,
   Search,
   RotateCcw,
   PlusCircle,
   MapPin,
   Calendar,
   AlertCircle,
-  Tag,
-  DollarSign,
+  Sparkles,
+  Scale,
 } from 'lucide-react'
 
 const CATEGORIES = ['Vegetables', 'Fruits', 'Grains', 'Pulses', 'Spices', 'Others']
 
-const PriceInsights = () => {
+export const PriceInsights = () => {
   const { user } = useAuth()
   const [insights, setInsights] = useState([])
   const [loading, setLoading] = useState(true)
@@ -109,78 +110,56 @@ const PriceInsights = () => {
     }
   }
 
-  const getTrendBadge = (trend) => {
-    switch (trend) {
-      case 'UP':
-        return (
-          <span className="inline-flex items-center space-x-1 text-xs font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded-full border border-red-200">
-            <TrendingUp className="w-3.5 h-3.5 text-red-600" />
-            <span>Trending Up</span>
-          </span>
-        )
-      case 'DOWN':
-        return (
-          <span className="inline-flex items-center space-x-1 text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-            <TrendingDown className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Trending Down</span>
-          </span>
-        )
-      default:
-        return (
-          <span className="inline-flex items-center space-x-1 text-xs font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">
-            <Minus className="w-3.5 h-3.5 text-slate-500" />
-            <span>Stable</span>
-          </span>
-        )
-    }
-  }
-
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-8 pb-12">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-800 to-teal-800 text-white rounded-2xl p-6 sm:p-8 shadow-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight">Agricultural Price Insights</h1>
-          <p className="text-sm text-emerald-100 mt-1">
-            Compare local Mandi market rates with direct KisanConnect platform farm prices
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-950 text-white p-8 sm:p-10 shadow-xl border border-emerald-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+        <div className="relative z-10 space-y-2 max-w-2xl">
+          <div className="inline-flex items-center space-x-2 bg-emerald-800/80 border border-emerald-500/40 px-3 py-1 rounded-full text-xs font-bold text-emerald-200 uppercase tracking-wider">
+            <Scale className="w-3.5 h-3.5 text-amber-300" />
+            <span>Fair Trade Mandi Intelligence</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight">Mandi Price Benchmarks</h1>
+          <p className="text-sm text-emerald-100 font-medium">
+            Real-time price comparisons between local APMC Mandis and direct KisanConnect farm listings.
           </p>
         </div>
 
         {user && user.role === 'ADMIN' && (
           <button
             onClick={() => setShowAddModal(true)}
-            className="inline-flex items-center space-x-1.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold px-4 py-2.5 rounded-xl transition-colors shadow text-sm"
+            className="inline-flex items-center space-x-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-5 py-3 rounded-2xl transition-all shadow-md text-xs relative z-10"
           >
             <PlusCircle className="w-4 h-4" />
-            <span>Add Price Insight</span>
+            <span>+ Add Benchmark</span>
           </button>
         )}
       </div>
 
       {/* Filter Controls */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
+      <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
         {/* Search */}
         <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1">Search Produce</label>
+          <label className="block text-xs font-bold text-slate-600 mb-1">Search Crop / Produce</label>
           <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
+            <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="e.g. Tomato, Onion..."
-              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
+              placeholder="e.g. Tomatoes, Wheat, Turmeric..."
+              className="w-full pl-10 pr-3.5 py-2.5 bg-stone-50 border border-slate-200 rounded-xl text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
             />
           </div>
         </div>
 
         {/* Category */}
         <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1">Category</label>
+          <label className="block text-xs font-bold text-slate-600 mb-1">Crop Category</label>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
+            className="w-full bg-stone-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
           >
             <option value="">All Categories</option>
             {CATEGORIES.map((cat) => (
@@ -193,13 +172,13 @@ const PriceInsights = () => {
 
         {/* Location */}
         <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1">Location / Mandi</label>
+          <label className="block text-xs font-bold text-slate-600 mb-1">Mandi / District</label>
           <input
             type="text"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="Filter location..."
-            className="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
+            className="w-full bg-stone-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
           />
         </div>
 
@@ -207,43 +186,40 @@ const PriceInsights = () => {
         <div>
           <button
             onClick={handleClearFilters}
-            className="w-full flex items-center justify-center space-x-1 border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold py-2 px-3 rounded-lg text-xs transition-colors"
+            className="w-full flex items-center justify-center space-x-1.5 border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold py-2.5 px-3.5 rounded-xl text-xs transition-colors"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span>Clear Filters</span>
+            <span>Reset Filters</span>
           </button>
         </div>
       </div>
 
-      {/* Content Grid / Loading / Error */}
+      {/* Content Grid */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white rounded-2xl p-6 border border-slate-200 animate-pulse space-y-3">
-              <div className="h-6 bg-slate-200 rounded w-1/2"></div>
-              <div className="h-10 bg-slate-200 rounded"></div>
-              <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-            </div>
+            <ProductSkeleton key={i} />
           ))}
         </div>
       ) : error ? (
-        <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-xl text-center space-y-2">
+        <div className="bg-red-50 border border-red-200 text-red-700 p-8 rounded-3xl text-center space-y-3">
           <AlertCircle className="w-10 h-10 text-red-500 mx-auto" />
-          <p className="font-semibold">{error}</p>
+          <p className="font-bold">{error}</p>
         </div>
       ) : insights.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-2xl p-12 text-center space-y-4">
-          <DollarSign className="w-16 h-16 text-slate-300 mx-auto" />
-          <h3 className="text-xl font-bold text-slate-700">No Price Insights Found</h3>
-          <p className="text-slate-500 text-sm max-w-md mx-auto">
-            No price benchmarking entries match your current search filters.
-          </p>
-        </div>
+        <EmptyState
+          icon={TrendingUp}
+          title="No Price Benchmark Matches"
+          description="There are currently no recorded APMC Mandi price benchmarks matching your search criteria."
+          actionText="Reset Filters"
+          onAction={handleClearFilters}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {insights.map((item) => {
             const diff = item.marketPrice - item.platformPrice
             const isCheaperOnPlatform = diff > 0
+            const pct = Math.round((Math.abs(diff) / item.marketPrice) * 100)
             const formattedDate = new Date(item.date).toLocaleDateString('en-IN', {
               day: 'numeric',
               month: 'short',
@@ -253,52 +229,54 @@ const PriceInsights = () => {
             return (
               <div
                 key={item._id}
-                className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden p-5 flex flex-col justify-between hover:border-emerald-300 transition-all space-y-4"
+                className="bg-white rounded-3xl shadow-sm hover:shadow-md border border-slate-200 overflow-hidden p-6 flex flex-col justify-between hover:border-emerald-300 transition-all space-y-5"
               >
-                <div>
-                  <div className="flex justify-between items-start mb-2">
+                <div className="space-y-4">
+                  <div className="flex justify-between items-start">
                     <div>
-                      <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                      <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-widest bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
                         {item.category}
                       </span>
-                      <h3 className="text-xl font-black text-slate-800 mt-1">{item.productName}</h3>
+                      <h3 className="text-xl font-black text-slate-900 mt-2">{item.productName}</h3>
                     </div>
-                    <div>{getTrendBadge(item.trend)}</div>
+                    <div>
+                      <TrendBadge trend={item.trend} diffPercentage={pct} />
+                    </div>
                   </div>
 
                   {/* Price Comparison Card */}
-                  <div className="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200 mt-3 text-center">
+                  <div className="grid grid-cols-2 gap-3 bg-stone-50 p-4 rounded-2xl border border-slate-200 text-center">
                     <div>
-                      <span className="text-[11px] font-semibold text-slate-500 block">Mandi / Market</span>
-                      <span className="text-lg font-bold text-slate-700">₹{item.marketPrice}</span>
-                      <span className="text-[10px] text-slate-400"> / {item.unit}</span>
+                      <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">Mandi Rate</span>
+                      <span className="text-xl font-bold text-slate-700 line-through decoration-rose-400">₹{item.marketPrice}</span>
+                      <span className="text-xs text-slate-500 font-medium">/{item.unit}</span>
                     </div>
 
                     <div className="border-l border-slate-200 pl-3">
-                      <span className="text-[11px] font-semibold text-emerald-700 block">KisanConnect</span>
-                      <span className="text-lg font-extrabold text-emerald-700">₹{item.platformPrice}</span>
-                      <span className="text-[10px] text-emerald-600"> / {item.unit}</span>
+                      <span className="text-[11px] font-black text-emerald-800 uppercase tracking-wider block">Direct Farm</span>
+                      <span className="text-2xl font-black text-emerald-800">₹{item.platformPrice}</span>
+                      <span className="text-xs text-emerald-700 font-bold">/{item.unit}</span>
                     </div>
                   </div>
 
-                  {/* Price Difference Indicator */}
-                  <div className="mt-3 p-2.5 rounded-lg text-xs font-semibold flex items-center justify-between bg-emerald-50 text-emerald-800 border border-emerald-100">
+                  {/* Price Savings Badge */}
+                  <div className="p-3 rounded-xl text-xs font-bold flex items-center justify-between bg-emerald-50 text-emerald-900 border border-emerald-200">
                     <span>Direct Farm Savings:</span>
-                    <span className="font-bold">
-                      {isCheaperOnPlatform ? `₹${diff.toFixed(2)} cheaper / ${item.unit}` : `₹${Math.abs(diff).toFixed(2)} variance`}
+                    <span className="font-black bg-white px-2 py-0.5 rounded-md border border-emerald-200">
+                      {isCheaperOnPlatform ? `Save ₹${diff.toFixed(2)} / ${item.unit} (${pct}% lower)` : `₹${Math.abs(diff).toFixed(2)} variance`}
                     </span>
                   </div>
                 </div>
 
                 {/* Footer metadata */}
-                <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-medium">
                   {item.location && (
                     <span className="flex items-center truncate">
-                      <MapPin className="w-3.5 h-3.5 text-slate-400 mr-1 flex-shrink-0" />
-                      <span className="truncate">{item.location}</span>
+                      <MapPin className="w-3.5 h-3.5 text-emerald-600 mr-1 flex-shrink-0" />
+                      <span className="truncate">{item.location} Mandi</span>
                     </span>
                   )}
-                  <span className="flex items-center text-[11px] text-slate-400">
+                  <span className="flex items-center text-slate-400 text-[11px]">
                     <Calendar className="w-3 h-3 mr-1" />
                     <span>{formattedDate}</span>
                   </span>
@@ -311,34 +289,34 @@ const PriceInsights = () => {
 
       {/* Admin Add Insight Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-4 border border-slate-200">
-            <h3 className="text-lg font-bold text-slate-800">Add Market Price Insight</h3>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 sm:p-8 space-y-4 border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
+            <h3 className="text-xl font-black text-slate-900">Add Mandi Price Benchmark</h3>
 
             {modalError && (
-              <div className="p-3 bg-red-50 text-red-700 text-xs rounded-lg">{modalError}</div>
+              <div className="p-3 bg-red-50 text-red-700 text-xs font-bold rounded-xl">{modalError}</div>
             )}
 
-            <form onSubmit={handleCreateInsight} className="space-y-3 text-xs">
+            <form onSubmit={handleCreateInsight} className="space-y-4 text-xs">
               <div>
-                <label className="font-semibold text-slate-700 block mb-1">Produce Name *</label>
+                <label className="font-bold text-slate-700 block mb-1">Crop Name *</label>
                 <input
                   type="text"
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
                   placeholder="e.g. Tomato"
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-xs outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
                   required
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-semibold text-slate-700 block mb-1">Category</label>
+                  <label className="font-bold text-slate-700 block mb-1">Category</label>
                   <select
                     value={formCategory}
                     onChange={(e) => setFormCategory(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-xs outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
                   >
                     {CATEGORIES.map((c) => (
                       <option key={c} value={c}>
@@ -348,11 +326,11 @@ const PriceInsights = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="font-semibold text-slate-700 block mb-1">Unit</label>
+                  <label className="font-bold text-slate-700 block mb-1">Unit</label>
                   <select
                     value={formUnit}
                     onChange={(e) => setFormUnit(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-xs outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
                   >
                     <option value="kg">kg</option>
                     <option value="quintal">quintal</option>
@@ -363,9 +341,9 @@ const PriceInsights = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-semibold text-slate-700 block mb-1">Mandi Price (₹) *</label>
+                  <label className="font-bold text-slate-700 block mb-1">Mandi Price (₹) *</label>
                   <input
                     type="number"
                     min="0"
@@ -373,12 +351,12 @@ const PriceInsights = () => {
                     value={formMarketPrice}
                     onChange={(e) => setFormMarketPrice(e.target.value)}
                     placeholder="45"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-xs outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
                     required
                   />
                 </div>
                 <div>
-                  <label className="font-semibold text-slate-700 block mb-1">Platform Price (₹) *</label>
+                  <label className="font-bold text-slate-700 block mb-1">Direct Platform Price (₹) *</label>
                   <input
                     type="number"
                     min="0"
@@ -386,29 +364,29 @@ const PriceInsights = () => {
                     value={formPlatformPrice}
                     onChange={(e) => setFormPlatformPrice(e.target.value)}
                     placeholder="40"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-xs outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
                     required
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-semibold text-slate-700 block mb-1">Location / Mandi</label>
+                  <label className="font-bold text-slate-700 block mb-1">Mandi Location</label>
                   <input
                     type="text"
                     value={formLocation}
                     onChange={(e) => setFormLocation(e.target.value)}
-                    placeholder="Coimbatore"
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-2 focus:ring-emerald-500"
+                    placeholder="Coimbatore Mandi"
+                    className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-xs outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
                   />
                 </div>
                 <div>
-                  <label className="font-semibold text-slate-700 block mb-1">Trend</label>
+                  <label className="font-bold text-slate-700 block mb-1">Market Trend</label>
                   <select
                     value={formTrend}
                     onChange={(e) => setFormTrend(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full px-3.5 py-2 border border-slate-300 rounded-xl text-xs outline-none focus:ring-2 focus:ring-emerald-500 font-bold"
                   >
                     <option value="STABLE">Stable</option>
                     <option value="UP">Trending Up</option>
@@ -417,20 +395,20 @@ const PriceInsights = () => {
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-2 pt-3">
+              <div className="flex justify-end space-x-3 pt-3">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 border border-slate-300 rounded-lg font-semibold text-slate-700 hover:bg-slate-50"
+                  className="px-4 py-2 border border-slate-300 rounded-xl font-bold text-slate-700 hover:bg-slate-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold disabled:opacity-50"
+                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black shadow disabled:opacity-50"
                 >
-                  {submitting ? 'Saving...' : 'Save Insight'}
+                  {submitting ? 'Saving...' : 'Save Benchmark'}
                 </button>
               </div>
             </form>
