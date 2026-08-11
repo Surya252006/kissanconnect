@@ -12,6 +12,10 @@ import MyProducts from './pages/farmer/MyProducts.jsx'
 import AddProduct from './pages/farmer/AddProduct.jsx'
 import EditProduct from './pages/farmer/EditProduct.jsx'
 
+import MyOrders from './pages/orders/MyOrders.jsx'
+import OrderDetails from './pages/orders/OrderDetails.jsx'
+import FarmerOrders from './pages/farmer/FarmerOrders.jsx'
+
 function App() {
   return (
     <AuthProvider>
@@ -23,6 +27,24 @@ function App() {
             <Route path="/products/:id" element={<ProductDetails />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+
+            {/* Buyer Order Routes */}
+            <Route
+              path="/my-orders"
+              element={
+                <ProtectedRoute>
+                  <MyOrders />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/orders/:id"
+              element={
+                <ProtectedRoute>
+                  <OrderDetails />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Farmer Protected Routes */}
             <Route
@@ -46,6 +68,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['FARMER']}>
                   <EditProduct />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/farmer/orders"
+              element={
+                <ProtectedRoute allowedRoles={['FARMER']}>
+                  <FarmerOrders />
                 </ProtectedRoute>
               }
             />

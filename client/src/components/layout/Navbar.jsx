@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext.jsx'
-import { Sprout, ShoppingBag, PlusCircle, LogOut, LogIn, UserPlus, PackageCheck } from 'lucide-react'
+import { Sprout, ShoppingBag, PlusCircle, LogOut, LogIn, UserPlus, PackageCheck, ClipboardList, Truck } from 'lucide-react'
 
 const Navbar = () => {
   const { user, logout } = useAuth()
@@ -29,7 +29,7 @@ const Navbar = () => {
           </Link>
 
           {/* Navigation Links */}
-          <div className="flex items-center space-x-2 sm:space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-3">
             <Link
               to="/"
               className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium hover:bg-emerald-700 transition-colors"
@@ -38,21 +38,38 @@ const Navbar = () => {
               <span>Marketplace</span>
             </Link>
 
+            {user && (
+              <Link
+                to="/my-orders"
+                className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium hover:bg-emerald-700 transition-colors"
+              >
+                <ClipboardList className="w-4 h-4" />
+                <span className="hidden sm:inline">My Orders</span>
+              </Link>
+            )}
+
             {user && user.role === 'FARMER' && (
               <>
+                <Link
+                  to="/farmer/orders"
+                  className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium hover:bg-emerald-700 transition-colors text-amber-200"
+                >
+                  <Truck className="w-4 h-4" />
+                  <span className="hidden md:inline">Customer Orders</span>
+                </Link>
                 <Link
                   to="/farmer/products"
                   className="flex items-center space-x-1 px-3 py-2 rounded-md text-sm font-medium hover:bg-emerald-700 transition-colors"
                 >
                   <PackageCheck className="w-4 h-4" />
-                  <span className="hidden md:inline">My Products</span>
+                  <span className="hidden lg:inline">My Produce</span>
                 </Link>
                 <Link
                   to="/farmer/products/add"
                   className="flex items-center space-x-1 bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold px-3 py-2 rounded-md text-sm transition-colors shadow-sm"
                 >
                   <PlusCircle className="w-4 h-4" />
-                  <span>Add Product</span>
+                  <span className="hidden sm:inline">Add Product</span>
                 </Link>
               </>
             )}

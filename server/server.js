@@ -8,6 +8,7 @@ import notFound from './middleware/notFoundMiddleware.js'
 import errorHandler from './middleware/errorMiddleware.js'
 import authRoutes from './routes/authRoutes.js'
 import productRoutes from './routes/productRoutes.js'
+import orderRoutes from './routes/orderRoutes.js'
 
 dotenv.config()
 
@@ -31,7 +32,7 @@ app.get('/api/health', (req, res) => {
 // API routes
 app.use('/api/auth', authRoutes)
 app.use('/api/products', productRoutes)
-// app.use('/api/orders', orderRoutes)
+app.use('/api/orders', orderRoutes)
 
 // 404 handler for unknown routes
 app.use(notFound)

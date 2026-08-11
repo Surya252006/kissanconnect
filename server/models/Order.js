@@ -22,6 +22,22 @@ const orderItemSchema = new mongoose.Schema(
       required: [true, 'Price is required'],
       min: [0, 'Price cannot be negative'],
     },
+    unit: {
+      type: String,
+      trim: true,
+      default: 'kg',
+    },
+  },
+  { _id: false }
+)
+
+const deliveryAddressSchema = new mongoose.Schema(
+  {
+    street: { type: String, trim: true },
+    city: { type: String, trim: true },
+    state: { type: String, trim: true },
+    pincode: { type: String, trim: true },
+    fullAddress: { type: String, trim: true },
   },
   { _id: false }
 )
@@ -53,13 +69,17 @@ const orderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Pending', 'Confirmed', 'Rejected', 'Preparing', 'Completed', 'Cancelled'],
-      default: 'Pending',
+      enum: ['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'],
+      default: 'PENDING',
     },
     logisticsStatus: {
       type: String,
-      enum: ['Confirmed', 'Preparing', 'Picked Up', 'In Transit', 'Delivered'],
-      default: 'Confirmed',
+      enum: ['PENDING', 'PACKED', 'PICKED_UP', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'],
+      default: 'PENDING',
+    },
+    deliveryAddress: {
+      type: deliveryAddressSchema,
+      required: [true, 'Delivery address is required'],
     },
   },
   {
