@@ -1,41 +1,58 @@
 import { Routes, Route } from 'react-router-dom'
+import { AuthProvider } from './context/AuthContext.jsx'
+import Navbar from './components/layout/Navbar.jsx'
+import ProtectedRoute from './components/common/ProtectedRoute.jsx'
+
+import Marketplace from './pages/marketplace/Marketplace.jsx'
+import ProductDetails from './pages/marketplace/ProductDetails.jsx'
+import Login from './pages/auth/Login.jsx'
+import Register from './pages/auth/Register.jsx'
+
+import MyProducts from './pages/farmer/MyProducts.jsx'
+import AddProduct from './pages/farmer/AddProduct.jsx'
+import EditProduct from './pages/farmer/EditProduct.jsx'
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-green-700 text-white p-4">
-        <h1 className="text-2xl font-bold">KisanConnect</h1>
-        <p className="text-sm text-green-100">Farmer-to-Buyer Agricultural Marketplace</p>
-      </header>
-      <main className="p-6">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-        </Routes>
-      </main>
-    </div>
-  )
-}
+    <AuthProvider>
+      <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
+        <Navbar />
+        <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 md:p-8">
+          <Routes>
+            <Route path="/" element={<Marketplace />} />
+            <Route path="/products/:id" element={<ProductDetails />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-function HomePage() {
-  return (
-    <div className="max-w-4xl mx-auto">
-      <h2 className="text-xl font-semibold mb-4">Welcome to KisanConnect</h2>
-      <p className="text-gray-600 mb-6">
-        Connecting farmers directly with buyers for fresh agricultural produce.
-      </p>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {['tomato', 'onion', 'potato', 'carrot'].map((product) => (
-          <div key={product} className="bg-white rounded-lg shadow p-4">
-            <img
-              src={`/products/${product}.jpg`}
-              alt={product}
-              className="w-full h-32 object-cover rounded mb-2"
+            {/* Farmer Protected Routes */}
+            <Route
+              path="/farmer/products"
+              element={
+                <ProtectedRoute allowedRoles={['FARMER']}>
+                  <MyProducts />
+                </ProtectedRoute>
+              }
             />
-            <p className="text-center font-medium capitalize">{product}</p>
-          </div>
-        ))}
+            <Route
+              path="/farmer/products/add"
+              element={
+                <ProtectedRoute allowedRoles={['FARMER']}>
+                  <AddProduct />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/farmer/products/edit/:id"
+              element={
+                <ProtectedRoute allowedRoles={['FARMER']}>
+                  <EditProduct />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </main>
       </div>
-    </div>
+    </AuthProvider>
   )
 }
 
