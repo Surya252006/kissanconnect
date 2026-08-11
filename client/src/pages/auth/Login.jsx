@@ -26,10 +26,12 @@ const Login = () => {
     try {
       setSubmitting(true)
       const user = await login(email, password)
-      if (user.role === 'FARMER') {
+      if (user.role === 'ADMIN') {
+        navigate('/admin/dashboard')
+      } else if (user.role === 'FARMER') {
         navigate('/farmer/products')
       } else {
-        navigate(from, { replace: true })
+        navigate(from === '/login' || from === '/register' ? '/' : from, { replace: true })
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please check your credentials.')

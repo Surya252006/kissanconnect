@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext.jsx'
 import Navbar from './components/layout/Navbar.jsx'
 import ProtectedRoute from './components/common/ProtectedRoute.jsx'
 
+import Home from './pages/home/Home.jsx'
 import Marketplace from './pages/marketplace/Marketplace.jsx'
 import ProductDetails from './pages/marketplace/ProductDetails.jsx'
 import PriceInsights from './pages/price/PriceInsights.jsx'
@@ -27,7 +28,8 @@ function App() {
         <Navbar />
         <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 md:p-8">
           <Routes>
-            <Route path="/" element={<Marketplace />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/products/:id" element={<ProductDetails />} />
             <Route path="/price-insights" element={<PriceInsights />} />
             <Route path="/login" element={<Login />} />

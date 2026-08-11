@@ -13,6 +13,7 @@ import {
   TrendingUp,
   ShieldCheck,
   LayoutDashboard,
+  Home as HomeIcon,
 } from 'lucide-react'
 
 const Navbar = () => {
@@ -42,9 +43,17 @@ const Navbar = () => {
           </Link>
 
           {/* Navigation Links */}
-          <div className="flex items-center space-x-1 sm:space-x-2.5">
+          <div className="flex items-center space-x-1 sm:space-x-2">
             <Link
               to="/"
+              className="flex items-center space-x-1 px-2.5 py-2 rounded-md text-sm font-medium hover:bg-emerald-700 transition-colors text-emerald-100"
+            >
+              <HomeIcon className="w-4 h-4" />
+              <span className="hidden sm:inline">Home</span>
+            </Link>
+
+            <Link
+              to="/marketplace"
               className="flex items-center space-x-1 px-2.5 py-2 rounded-md text-sm font-medium hover:bg-emerald-700 transition-colors"
             >
               <ShoppingBag className="w-4 h-4" />

@@ -26,6 +26,7 @@ const ProductDetails = () => {
   const navigate = useNavigate()
 
   const [product, setProduct] = useState(null)
+  const [priceInsight, setPriceInsight] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -52,6 +53,16 @@ const ProductDetails = () => {
             setOrderQuantity(1)
           } else {
             setOrderQuantity(0)
+          }
+
+          // Fetch benchmark price insight for this produce if available
+          try {
+            const piRes = await api.get(`/price-insights?search=${encodeURIComponent(p.name)}`)
+            if (piRes.data && piRes.data.success && piRes.data.data.insights?.length > 0) {
+              setPriceInsight(piRes.data.data.insights[0])
+            }
+          } catch (piErr) {
+            // Non-critical, ignore
           }
         }
       } catch (err) {
@@ -268,6 +279,34 @@ const ProductDetails = () => {
                 )}
               </div>
             </div>
+
+            {/* Price Transparency Insight */}
+            {priceInsight && (
+              <div className="bg-emerald-50/70 border border-emerald-200 rounded-xl p-3.5 space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-emerald-900 flex items-center space-x-1">
+                    <span>Mandi Price Benchmark</span>
+                  </span>
+                  <span className="text-[10px] font-bold text-emerald-700 bg-white px-2 py-0.5 rounded border border-emerald-200">
+                    Trend: {priceInsight.trend}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-center text-xs">
+                  <div className="bg-white p-2 rounded-lg border border-emerald-100">
+                    <span className="text-slate-500 block text-[10px]">Local Mandi</span>
+                    <span className="font-bold text-slate-700">₹{priceInsight.marketPrice} / {priceInsight.unit}</span>
+                  </div>
+                  <div className="bg-white p-2 rounded-lg border border-emerald-100">
+                    <span className="text-emerald-700 block text-[10px]">Direct Farm Savings</span>
+                    <span className="font-extrabold text-emerald-700">
+                      {priceInsight.marketPrice > product.price
+                        ? `Save ₹${(priceInsight.marketPrice - product.price).toFixed(2)} / ${product.unit}`
+                        : 'Direct from Source'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Description */}
             {product.description && (
