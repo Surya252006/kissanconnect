@@ -105,8 +105,9 @@ const ProductDetails = () => {
       return
     }
 
-    if (user.role === 'FARMER') {
-      setOrderError('Farmer accounts cannot place orders. Please register/login as a Buyer.')
+    const farmerIdStr = product.farmerId?._id ? product.farmerId._id.toString() : product.farmerId?.toString()
+    if (farmerIdStr && farmerIdStr === user._id) {
+      setOrderError('You cannot purchase your own listed produce.')
       return
     }
 

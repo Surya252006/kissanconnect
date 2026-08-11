@@ -17,13 +17,41 @@ dotenv.config()
 
 const app = express()
 
-// Middleware
+// CORS configuration
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://localhost:5000',
+  process.env.CLIENT_URL,
+  process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, '') : null,
+].filter(Boolean)
+
 const corsOptions = {
-  origin: process.env.CLIENT_URL
-    ? [process.env.CLIENT_URL, 'http://localhost:5173', 'http://localhost:3000']
-    : '*',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (such as mobile apps, curl, Postman)
+    if (!origin) return callback(null, true)
+
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.includes('localhost') ||
+      origin.includes('127.0.0.1') ||
+      origin.includes('vercel.app') ||
+      origin.includes('web.app') ||
+      origin.includes('firebaseapp.com') ||
+      process.env.NODE_ENV !== 'production'
+    ) {
+      return callback(null, true)
+    }
+
+    return callback(new Error('Blocked by CORS policy'))
+  },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }
+
 app.use(cors(corsOptions))
 app.use(express.json())
 

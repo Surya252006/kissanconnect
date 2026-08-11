@@ -7,13 +7,7 @@ import Product from '../models/Product.js'
 // @access  Private (CONSUMER/RETAILER/WHOLESALER/ADMIN)
 export const createOrder = async (req, res, next) => {
   try {
-    // Security Check: FARMER role cannot place orders as buyers
-    if (req.user.role === 'FARMER') {
-      return res.status(403).json({
-        success: false,
-        message: 'Farmers are not authorized to create buyer orders',
-      })
-    }
+    // Note: All authenticated roles can purchase produce from other farmers
 
     const { productId, quantity, deliveryAddress } = req.body
 
@@ -68,6 +62,13 @@ export const createOrder = async (req, res, next) => {
       return res.status(404).json({
         success: false,
         message: 'Product not found',
+      })
+    }
+
+    if (product.farmerId.toString() === req.user._id.toString()) {
+      return res.status(400).json({
+        success: false,
+        message: 'You cannot purchase your own listed produce',
       })
     }
 
