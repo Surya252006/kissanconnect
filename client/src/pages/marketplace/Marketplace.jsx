@@ -21,7 +21,15 @@ import {
   CheckCircle2,
 } from 'lucide-react'
 
-const CATEGORIES = ['All', 'Vegetables', 'Fruits', 'Grains', 'Pulses', 'Spices', 'Others']
+const CATEGORIES = [
+  { name: 'All', icon: '🌾' },
+  { name: 'Vegetables', icon: '🥦' },
+  { name: 'Fruits', icon: '🍎' },
+  { name: 'Grains', icon: '🌾' },
+  { name: 'Pulses', icon: '🫘' },
+  { name: 'Spices', icon: '🌶️' },
+  { name: 'Others', icon: '📦' },
+]
 
 export const Marketplace = () => {
   const [products, setProducts] = useState([])
@@ -104,23 +112,24 @@ export const Marketplace = () => {
       </div>
 
       {/* Category Pills Slider */}
-      <div className="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none">
+      <div className="flex items-center space-x-2.5 overflow-x-auto pb-2 scrollbar-none">
         {CATEGORIES.map((cat) => {
-          const isSelected = selectedCategory === cat
+          const isSelected = selectedCategory === cat.name
           return (
             <button
-              key={cat}
+              key={cat.name}
               onClick={() => {
-                setSelectedCategory(cat)
+                setSelectedCategory(cat.name)
                 setPage(1)
               }}
-              className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all whitespace-nowrap shadow-sm ${
+              className={`flex items-center space-x-1.5 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all whitespace-nowrap shadow-sm ${
                 isSelected
-                  ? 'bg-emerald-700 text-white shadow-md shadow-emerald-700/20'
+                  ? 'bg-emerald-700 text-white shadow-md shadow-emerald-700/30 ring-2 ring-emerald-600'
                   : 'bg-white text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 border border-slate-200'
               }`}
             >
-              {cat}
+              <span>{cat.icon}</span>
+              <span>{cat.name}</span>
             </button>
           )
         })}
