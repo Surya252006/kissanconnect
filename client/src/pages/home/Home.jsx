@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext.jsx'
 import api from '../../services/api.js'
+import FarmerHeroSlider from '../../components/home/FarmerHeroSlider.jsx'
 import {
   Sprout,
   ShoppingBag,
@@ -20,6 +21,7 @@ import {
   Award,
   ChevronRight,
   Zap,
+  HeartHandshake,
 } from 'lucide-react'
 
 export const Home = () => {
@@ -53,11 +55,38 @@ export const Home = () => {
   }, [])
 
   const categories = [
-    { name: 'Vegetables', image: '/products/tomato.jpg', count: 'Fresh Field Crops', color: 'from-emerald-600 to-teal-800' },
-    { name: 'Fruits', image: '/products/banana.jpg', count: 'Orchard Harvests', color: 'from-amber-500 to-orange-700' },
-    { name: 'Grains', image: '/products/wheat.jpg', count: 'Staple Harvests', color: 'from-yellow-600 to-amber-800' },
-    { name: 'Spices', image: '/products/turmeric.jpg', count: 'Aromatic & Ground', color: 'from-orange-600 to-red-800' },
-    { name: 'Pulses', image: '/products/chickpeas.jpg', count: 'High-Protein Yields', color: 'from-emerald-700 to-green-900' },
+    { name: 'Vegetables', icon: '🥦', image: '/products/tomato.jpg', count: 'Direct Field Crops', tag: 'Fresh Harvest' },
+    { name: 'Fruits', icon: '🍎', image: '/products/banana.jpg', count: 'Orchard Harvests', tag: 'Sun-Ripened' },
+    { name: 'Grains', icon: '🌾', image: '/products/wheat.jpg', count: 'Staple Harvests', tag: 'Direct Wholesale' },
+    { name: 'Spices', icon: '🌶️', image: '/products/turmeric.jpg', count: 'Aromatic & Pure', tag: 'GI Certified' },
+    { name: 'Pulses', icon: '🫘', image: '/products/chickpeas.jpg', count: 'High-Protein Yields', tag: 'Unpolished' },
+  ]
+
+  const farmerImpactStories = [
+    {
+      title: 'Women-Led Organic Farming',
+      location: 'Nashik Valley, Maharashtra',
+      farmer: 'Sunita Devi & Self-Help Group',
+      image: '/images/slide_women_farmers.png',
+      desc: 'Direct market sales enabled 45+ women farmers to eliminate local broker markups and earn 35% higher net income on fresh greens.',
+      stat: '+35% Net Farmer Margin',
+    },
+    {
+      title: 'Smart Grain & Wheat Production',
+      location: 'Ludhiana, Punjab',
+      farmer: 'Gurpreet Singh',
+      image: '/images/slide_smart_farmer.png',
+      desc: 'Using KisanConnect real-time Mandi price matching to sell high-grade wheat harvests directly to commercial bakeries and retailers.',
+      stat: '100% Direct Settlement',
+    },
+    {
+      title: 'Certified Orchard Direct Sourcing',
+      location: 'Wayanad, Kerala',
+      farmer: 'Ananya Roy & Orchard Producers',
+      image: '/images/slide_orchard_harvest.png',
+      desc: 'Direct harvest delivery of organic turmeric, pepper, and fresh fruits directly to urban consumers with verified GI origin seals.',
+      stat: 'Verified GI Harvest',
+    },
   ]
 
   const workflowSteps = [
@@ -101,120 +130,12 @@ export const Home = () => {
 
   return (
     <div className="space-y-16 pb-16">
-      {/* 🌟 HERO SECTION: Split Visual with Sunrise Farm Image & Glass Tags */}
-      <section className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-950 text-white shadow-2xl border border-emerald-800/80">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-8 sm:p-12 lg:p-14 relative z-10">
-          {/* Hero Left Content */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="inline-flex items-center space-x-2 bg-emerald-800/90 border border-emerald-500/50 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-bold text-amber-300 uppercase tracking-wider shadow-sm">
-              <Sparkles className="w-4 h-4 text-amber-300" />
-              <span>India's Direct Agricultural Network</span>
-            </div>
+      {/* 🌟 1. INTERACTIVE FARMER VISUAL HERO SLIDER */}
+      <FarmerHeroSlider />
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.12]">
-              From Farm to Buyer, <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-200 to-emerald-200">
-                Without the Middleman.
-              </span>
-            </h1>
-
-            <p className="text-emerald-100/90 text-base sm:text-lg leading-relaxed max-w-xl font-medium">
-              Connect directly with verified local farmers, discover transparent APMC Mandi price benchmarks, and track fresh produce orders end-to-end.
-            </p>
-
-            <div className="flex flex-wrap gap-4 pt-2">
-              <Link
-                to="/marketplace"
-                className="inline-flex items-center space-x-2.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black px-7 py-4 rounded-2xl transition-all shadow-xl hover:shadow-amber-500/20 text-sm sm:text-base transform hover:-translate-y-0.5"
-              >
-                <ShoppingBag className="w-5 h-5" />
-                <span>Explore Marketplace</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-
-              <Link
-                to="/price-insights"
-                className="inline-flex items-center space-x-2 bg-emerald-800/80 hover:bg-emerald-700 border border-emerald-500/50 text-white font-bold px-6 py-4 rounded-2xl transition-all text-sm sm:text-base backdrop-blur-sm"
-              >
-                <TrendingUp className="w-5 h-5 text-amber-300" />
-                <span>Mandi Rates</span>
-              </Link>
-
-              {!user && (
-                <Link
-                  to="/register"
-                  className="inline-flex items-center space-x-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-bold px-6 py-4 rounded-2xl transition-all text-sm sm:text-base"
-                >
-                  <Sprout className="w-5 h-5 text-emerald-300" />
-                  <span>Join as Farmer</span>
-                </Link>
-              )}
-            </div>
-
-            {/* Quick Trust Badges */}
-            <div className="pt-4 flex flex-wrap items-center gap-4 text-xs text-emerald-200 font-semibold">
-              <span className="flex items-center space-x-1.5">
-                <CheckCircle2 className="w-4 h-4 text-amber-300" />
-                <span>100% Quality Inspected</span>
-              </span>
-              <span className="flex items-center space-x-1.5">
-                <CheckCircle2 className="w-4 h-4 text-amber-300" />
-                <span>Direct Farmer Payouts</span>
-              </span>
-              <span className="flex items-center space-x-1.5">
-                <CheckCircle2 className="w-4 h-4 text-amber-300" />
-                <span>Live Logistics Tracking</span>
-              </span>
-            </div>
-          </div>
-
-          {/* Hero Right Visual Presentation with Floating Tags */}
-          <div className="lg:col-span-5 relative">
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl border-2 border-emerald-600/40 group">
-              <img
-                src="/images/hero_banner.png"
-                alt="Lush Indian Farmland Harvest"
-                className="w-full h-80 sm:h-96 lg:h-[440px] object-cover group-hover:scale-105 transition-transform duration-700"
-                onError={(e) => {
-                  e.target.onerror = null
-                  e.target.src = '/products/tomato.jpg'
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-transparent to-transparent"></div>
-
-              {/* Floating Glass Tag 1: Quality Verified */}
-              <div className="absolute top-4 left-4 glass-dark text-white px-3.5 py-2 rounded-2xl flex items-center space-x-2 animate-float">
-                <div className="p-1.5 bg-emerald-500 rounded-xl text-white">
-                  <ShieldCheck className="w-4 h-4" />
-                </div>
-                <div>
-                  <p className="text-[10px] text-emerald-200 uppercase font-bold tracking-wider">Quality Tag</p>
-                  <p className="text-xs font-black">GI & Organic Certified</p>
-                </div>
-              </div>
-
-              {/* Floating Glass Tag 2: Savings Tag */}
-              <div className="absolute bottom-4 right-4 glass-dark text-white px-4 py-2.5 rounded-2xl flex items-center space-x-2.5 animate-float-delayed">
-                <div className="p-1.5 bg-amber-400 text-slate-950 rounded-xl font-black">
-                  <Zap className="w-4 h-4" />
-                </div>
-                <div>
-                  <p className="text-[10px] text-amber-300 uppercase font-bold tracking-wider">Direct Savings</p>
-                  <p className="text-xs font-black">15–30% Below Mandi Markup</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Ambient Glow Graphic */}
-        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
-      </section>
-
-      {/* 📊 LIVE PLATFORM METRICS */}
+      {/* 📊 2. LIVE PLATFORM METRICS */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex items-center space-x-4 hover:border-emerald-300 hover:shadow-md transition-all">
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm flex items-center space-x-4 hover:border-emerald-300 hover:shadow-md transition-all">
           <div className="p-3.5 bg-emerald-50 text-emerald-700 rounded-2xl">
             <Users className="w-6 h-6" />
           </div>
@@ -224,7 +145,7 @@ export const Home = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex items-center space-x-4 hover:border-emerald-300 hover:shadow-md transition-all">
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm flex items-center space-x-4 hover:border-emerald-300 hover:shadow-md transition-all">
           <div className="p-3.5 bg-amber-50 text-amber-700 rounded-2xl">
             <Sprout className="w-6 h-6" />
           </div>
@@ -234,7 +155,7 @@ export const Home = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex items-center space-x-4 hover:border-emerald-300 hover:shadow-md transition-all">
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm flex items-center space-x-4 hover:border-emerald-300 hover:shadow-md transition-all">
           <div className="p-3.5 bg-blue-50 text-blue-700 rounded-2xl">
             <Activity className="w-6 h-6" />
           </div>
@@ -244,7 +165,7 @@ export const Home = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex items-center space-x-4 hover:border-emerald-300 hover:shadow-md transition-all">
+        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm flex items-center space-x-4 hover:border-emerald-300 hover:shadow-md transition-all">
           <div className="p-3.5 bg-purple-50 text-purple-700 rounded-2xl">
             <ShieldCheck className="w-6 h-6" />
           </div>
@@ -255,7 +176,7 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 🌾 HARVEST CATEGORIES WITH REAL PRODUCE VISUALS */}
+      {/* 🌾 3. HARVEST CATEGORIES WITH REAL PRODUCE VISUALS */}
       <section className="space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2">
           <div>
@@ -268,7 +189,7 @@ export const Home = () => {
             to="/marketplace"
             className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center space-x-1"
           >
-            <span>View all produce</span>
+            <span>View all produce catalog</span>
             <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
@@ -278,16 +199,23 @@ export const Home = () => {
             <Link
               key={idx}
               to={`/marketplace`}
-              className="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-200 hover:border-emerald-300 transition-all duration-300 flex flex-col h-48 sm:h-56 bg-slate-900"
+              className="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-200 hover:border-emerald-300 transition-all duration-300 flex flex-col h-52 sm:h-60 bg-slate-900"
             >
               <img
                 src={cat.image}
                 alt={cat.name}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-80 group-hover:opacity-90"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-75 group-hover:opacity-90"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
 
+              <div className="absolute top-3 left-3">
+                <span className="bg-white/20 backdrop-blur-md border border-white/30 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full shadow">
+                  {cat.tag}
+                </span>
+              </div>
+
               <div className="absolute bottom-4 left-4 right-4 text-white">
+                <span className="text-xl mb-1 block">{cat.icon}</span>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-amber-300 block">
                   {cat.count}
                 </span>
@@ -298,66 +226,78 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 🤝 FARMER SPOTLIGHT & DIRECT TRADE STORY */}
-      <section className="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-sm overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-        <div className="lg:col-span-6 relative">
-          <div className="relative rounded-3xl overflow-hidden shadow-xl border border-slate-200">
-            <img
-              src="/images/farmer_story.png"
-              alt="Indian Farmer With Digital Marketplace"
-              className="w-full h-80 sm:h-96 object-cover"
-              onError={(e) => {
-                e.target.onerror = null
-                e.target.src = '/products/tomato.jpg'
-              }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent"></div>
-            <div className="absolute bottom-4 left-4 text-white">
-              <span className="bg-emerald-600 text-white text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow">
-                Farmer Spotlight
-              </span>
-              <h4 className="text-base font-black mt-1">Ramesh Patel • 15+ Acres Organic Farmer</h4>
-              <p className="text-xs text-emerald-100">Coimbatore Agricultural Cluster</p>
-            </div>
+      {/* 🖼️ 4. VISUAL FARMER IMPACT STORIES */}
+      <section className="space-y-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2">
+          <div>
+            <span className="text-xs font-bold text-amber-800 uppercase tracking-widest bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+              Grassroots Impact
+            </span>
+            <h2 className="text-3xl font-black text-slate-900 mt-2">Farmer Voices & Direct Trade Stories</h2>
           </div>
+          <Link
+            to="/register"
+            className="text-xs font-bold text-amber-700 hover:text-amber-800 flex items-center space-x-1"
+          >
+            <span>Join our farmer network</span>
+            <ChevronRight className="w-4 h-4" />
+          </Link>
         </div>
 
-        <div className="lg:col-span-6 space-y-5">
-          <span className="text-xs font-bold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-            Fair Trade Mission
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 leading-tight">
-            Empowering Farmers With Direct Market Access
-          </h2>
-          <p className="text-slate-600 text-sm leading-relaxed font-medium">
-            Traditional supply chains eat up to 40% of agricultural margins through unauthorized middleman cuts. KisanConnect enables farmers to set their own fair harvest prices and publish directly to verified consumers and retail businesses.
-          </p>
-
-          <div className="grid grid-cols-2 gap-4 pt-2 text-xs text-slate-700">
-            <div className="bg-stone-50 p-3.5 rounded-2xl border border-slate-200 space-y-1">
-              <span className="font-black text-emerald-700 block text-lg">0% Commissions</span>
-              <p className="text-slate-500 font-medium">Direct payment settlements with no platform fee deduction.</p>
-            </div>
-            <div className="bg-stone-50 p-3.5 rounded-2xl border border-slate-200 space-y-1">
-              <span className="font-black text-amber-600 block text-lg">GI Verification</span>
-              <p className="text-slate-500 font-medium">Audited quality seals to command premium market value.</p>
-            </div>
-          </div>
-
-          <div className="pt-2">
-            <Link
-              to="/register"
-              className="inline-flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black px-6 py-3.5 rounded-2xl transition-all shadow-md text-xs"
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {farmerImpactStories.map((story, idx) => (
+            <div
+              key={idx}
+              className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-200 hover:border-emerald-300 transition-all duration-300 flex flex-col justify-between group"
             >
-              <span>Join as a Verified Producer</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
+              <div>
+                <div className="relative h-56 w-full overflow-hidden bg-slate-100">
+                  <img
+                    src={story.image}
+                    alt={story.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => {
+                      e.target.onerror = null
+                      e.target.src = '/products/tomato.jpg'
+                    }}
+                  />
+                  <div className="absolute top-3 right-3">
+                    <span className="bg-emerald-600 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-md">
+                      {story.stat}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-6 space-y-3">
+                  <div>
+                    <span className="text-[11px] font-bold text-emerald-700 block">
+                      📍 {story.location}
+                    </span>
+                    <h3 className="text-lg font-black text-slate-900 mt-1 leading-snug">
+                      {story.title}
+                    </h3>
+                  </div>
+
+                  <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                    {story.desc}
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-6 pt-0 border-t border-slate-100 mt-3 pt-3 flex items-center justify-between text-xs">
+                <span className="font-bold text-slate-800">{story.farmer}</span>
+                <span className="text-emerald-700 font-bold flex items-center space-x-1">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>Verified Producer</span>
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* ⚖️ MANDI BENCHMARK & HARVEST FLATLAY BANNER */}
-      <section className="bg-gradient-to-br from-emerald-900 to-teal-950 text-white rounded-3xl p-8 sm:p-12 shadow-xl border border-emerald-800 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      {/* ⚖️ 5. MANDI BENCHMARK & HARVEST FLATLAY BANNER */}
+      <section className="bg-gradient-to-br from-emerald-900 to-teal-950 text-white rounded-[2.5rem] p-8 sm:p-12 shadow-xl border border-emerald-800 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         <div className="lg:col-span-7 space-y-5">
           <div className="inline-flex items-center space-x-2 bg-emerald-800 border border-emerald-600 px-3 py-1 rounded-full text-xs font-bold text-amber-300 uppercase tracking-wider">
             <Scale className="w-3.5 h-3.5" />
@@ -398,7 +338,7 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 🔄 6-STEP VISUAL WORKFLOW */}
+      {/* 🔄 6. 6-STEP VISUAL WORKFLOW */}
       <section id="how-it-works" className="space-y-8 bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-sm">
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <span className="text-xs font-bold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
@@ -439,7 +379,7 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 🌟 FINAL CTA BANNER */}
+      {/* 🌟 7. FINAL CTA BANNER */}
       <section className="bg-gradient-to-r from-emerald-800 via-teal-900 to-emerald-950 text-white rounded-[2.5rem] p-8 sm:p-12 text-center space-y-5 shadow-xl border border-emerald-700/60">
         <h3 className="text-3xl sm:text-4xl font-black">Experience Direct Farm Trade Today</h3>
         <p className="text-sm text-emerald-100 max-w-xl mx-auto font-medium leading-relaxed">
