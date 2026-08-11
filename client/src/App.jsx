@@ -5,6 +5,7 @@ import ProtectedRoute from './components/common/ProtectedRoute.jsx'
 
 import Marketplace from './pages/marketplace/Marketplace.jsx'
 import ProductDetails from './pages/marketplace/ProductDetails.jsx'
+import PriceInsights from './pages/price/PriceInsights.jsx'
 import Login from './pages/auth/Login.jsx'
 import Register from './pages/auth/Register.jsx'
 
@@ -16,6 +17,9 @@ import MyOrders from './pages/orders/MyOrders.jsx'
 import OrderDetails from './pages/orders/OrderDetails.jsx'
 import FarmerOrders from './pages/farmer/FarmerOrders.jsx'
 
+import AdminDashboard from './pages/admin/AdminDashboard.jsx'
+import Verification from './pages/admin/Verification.jsx'
+
 function App() {
   return (
     <AuthProvider>
@@ -25,6 +29,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Marketplace />} />
             <Route path="/products/:id" element={<ProductDetails />} />
+            <Route path="/price-insights" element={<PriceInsights />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
@@ -76,6 +81,24 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['FARMER']}>
                   <FarmerOrders />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Admin Protected Routes */}
+            <Route
+              path="/admin/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/verifications"
+              element={
+                <ProtectedRoute allowedRoles={['ADMIN']}>
+                  <Verification />
                 </ProtectedRoute>
               }
             />

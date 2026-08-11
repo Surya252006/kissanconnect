@@ -11,6 +11,7 @@ import {
   CheckCircle2,
   Tag,
   MapPin,
+  ShieldCheck,
 } from 'lucide-react'
 
 const MyProducts = () => {
@@ -19,6 +20,8 @@ const MyProducts = () => {
   const [error, setError] = useState('')
   const [deletingId, setDeletingId] = useState(null)
   const [deleteConfirmId, setDeleteConfirmId] = useState(null)
+  const [verifyingId, setVerifyingId] = useState(null)
+  const [verificationSuccessId, setVerificationSuccessId] = useState(null)
 
   const fetchMyProducts = async () => {
     try {
@@ -56,13 +59,33 @@ const MyProducts = () => {
     }
   }
 
+  const handleRequestVerification = async (productId) => {
+    try {
+      setVerifyingId(productId)
+      const res = await api.post('/verifications', {
+        type: 'PRODUCT',
+        productId,
+        remarks: 'Farmer requested produce quality verification',
+      })
+      if (res.data && res.data.success) {
+        setVerificationSuccessId(productId)
+        setTimeout(() => setVerificationSuccessId(null), 3000)
+      }
+    } catch (err) {
+      console.error('Error requesting verification:', err)
+      alert(err.response?.data?.message || 'Failed to submit verification request.')
+    } finally {
+      setVerifyingId(null)
+    }
+  }
+
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-200 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">My Farm Produce</h1>
-          <p className="text-sm text-slate-500 mt-1">Manage, update, or remove your listed agricultural products</p>
+          <p className="text-sm text-slate-500 mt-1">Manage, update, or verify your listed agricultural products</p>
         </div>
         <Link
           to="/farmer/products/add"
@@ -133,6 +156,13 @@ const MyProducts = () => {
                       {product.category}
                     </span>
                   </div>
+
+                  {product.isVerified && (
+                    <div className="absolute top-3 right-3 bg-emerald-600 text-white text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center space-x-1 shadow">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Verified</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="p-4 space-y-2">
@@ -159,7 +189,26 @@ const MyProducts = () => {
               </div>
 
               {/* Action Buttons & Delete Confirmation */}
-              <div className="p-4 border-t border-slate-100 bg-slate-50/50">
+              <div className="p-4 border-t border-slate-100 bg-slate-50/50 space-y-2">
+                {!product.isVerified && (
+                  <div>
+                    {verificationSuccessId === product._id ? (
+                      <div className="text-[11px] bg-emerald-50 text-emerald-800 font-bold p-1.5 rounded text-center border border-emerald-200">
+                        ✓ Verification Requested
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => handleRequestVerification(product._id)}
+                        disabled={verifyingId === product._id}
+                        className="w-full inline-flex items-center justify-center space-x-1 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 font-semibold py-1 px-2 rounded-lg text-xs transition-colors"
+                      >
+                        <ShieldCheck className="w-3.5 h-3.5 text-amber-700" />
+                        <span>{verifyingId === product._id ? 'Requesting...' : 'Request Verification'}</span>
+                      </button>
+                    )}
+                  </div>
+                )}
+
                 {deleteConfirmId === product._id ? (
                   <div className="bg-red-50 p-2.5 rounded-lg border border-red-200 text-center space-y-2">
                     <p className="text-xs font-bold text-red-700">Delete this product?</p>
