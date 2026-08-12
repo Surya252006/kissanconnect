@@ -34,3 +34,27 @@ export const protect = async (req, res, next) => {
     next(error)
   }
 }
+
+// Optional Auth — attaches req.user if token is present and valid, otherwise proceeds as guest
+export const optionalAuth = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      req.user = null
+      return next()
+    }
+
+    const token = authHeader.split(' ')[1]
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET)
+      const user = await User.findById(decoded.userId).select('-password')
+      req.user = user || null
+    } catch (err) {
+      req.user = null
+    }
+    next()
+  } catch (error) {
+    req.user = null
+    next()
+  }
+}

@@ -12,6 +12,7 @@ import orderRoutes from './routes/orderRoutes.js'
 import priceInsightRoutes from './routes/priceInsightRoutes.js'
 import verificationRoutes from './routes/verificationRoutes.js'
 import analyticsRoutes from './routes/analyticsRoutes.js'
+import chatRoutes from './routes/chatRoutes.js'
 
 dotenv.config()
 
@@ -30,7 +31,6 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (such as mobile apps, curl, Postman)
     if (!origin) return callback(null, true)
 
     if (
@@ -62,7 +62,7 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({
     success: true,
     message: 'KisanConnect API is running',
-    database: dbConnected ? 'connected' : 'disconnected',
+    database: dbConnected ? 'connected' : 'connecting',
   })
 })
 
@@ -73,6 +73,7 @@ app.use('/api/orders', orderRoutes)
 app.use('/api/price-insights', priceInsightRoutes)
 app.use('/api/verifications', verificationRoutes)
 app.use('/api/analytics', analyticsRoutes)
+app.use('/api/chat', chatRoutes)
 
 // 404 handler for unknown routes
 app.use(notFound)
@@ -82,9 +83,10 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000
 
-// Connect to MongoDB, then start the server
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`KisanConnect API running on port ${PORT}`)
-  })
+// Start listening immediately
+app.listen(PORT, () => {
+  console.log(`KisanConnect API running on port ${PORT}`)
 })
+
+// Connect to MongoDB
+connectDB()

@@ -19,6 +19,8 @@ import {
   X,
   User,
   ChevronDown,
+  Bot,
+  Sparkles,
 } from 'lucide-react'
 
 export const Navbar = () => {
@@ -94,6 +96,19 @@ export const Navbar = () => {
             >
               <TrendingUp className="w-4 h-4 text-amber-300" />
               <span>Price Insights</span>
+            </Link>
+
+            {/* 🤖 KisanMitra AI Navigation Link */}
+            <Link
+              to="/ai-chat"
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
+                isActive('/ai-chat')
+                  ? 'bg-amber-400 text-slate-950 shadow-md ring-2 ring-amber-300'
+                  : 'bg-emerald-800/80 hover:bg-emerald-800 text-amber-300 border border-amber-500/40 hover:border-amber-400'
+              }`}
+            >
+              <Bot className="w-4 h-4 text-amber-300" />
+              <span>KisanMitra AI</span>
             </Link>
 
             {/* Authenticated Links for Buyers/Consumers */}
@@ -246,6 +261,15 @@ export const Navbar = () => {
                       <span>My Purchase Orders</span>
                     </Link>
 
+                    <Link
+                      to="/ai-chat"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="flex items-center space-x-2 px-4 py-2 text-xs font-semibold text-amber-700 hover:bg-amber-50"
+                    >
+                      <Bot className="w-4 h-4 text-amber-600" />
+                      <span>KisanMitra AI Assistant</span>
+                    </Link>
+
                     <div className="border-t border-slate-100 my-1"></div>
 
                     <button
@@ -319,6 +343,15 @@ export const Navbar = () => {
           >
             <TrendingUp className="w-4 h-4" />
             <span>Price Insights</span>
+          </Link>
+
+          <Link
+            to="/ai-chat"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center space-x-2 px-3 py-2.5 rounded-xl text-sm font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40"
+          >
+            <Bot className="w-4 h-4" />
+            <span>KisanMitra AI Assistant</span>
           </Link>
 
           {user && (

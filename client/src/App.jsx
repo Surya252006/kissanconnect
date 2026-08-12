@@ -3,11 +3,13 @@ import { AuthProvider } from './context/AuthContext.jsx'
 import Navbar from './components/layout/Navbar.jsx'
 import Footer from './components/layout/Footer.jsx'
 import ProtectedRoute from './components/common/ProtectedRoute.jsx'
+import KisanMitraChatWidget from './components/chat/KisanMitraChatWidget.jsx'
 
 import Home from './pages/home/Home.jsx'
 import Marketplace from './pages/marketplace/Marketplace.jsx'
 import ProductDetails from './pages/marketplace/ProductDetails.jsx'
 import PriceInsights from './pages/price/PriceInsights.jsx'
+import AIChatPage from './pages/chat/AIChatPage.jsx'
 import Login from './pages/auth/Login.jsx'
 import Register from './pages/auth/Register.jsx'
 
@@ -25,7 +27,7 @@ import Verification from './pages/admin/Verification.jsx'
 function App() {
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-stone-50 flex flex-col font-sans text-slate-900">
+      <div className="min-h-screen bg-[#F9FBF9] flex flex-col font-sans text-slate-900">
         <Navbar />
         <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 md:p-8">
           <Routes>
@@ -33,6 +35,7 @@ function App() {
             <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/products/:id" element={<ProductDetails />} />
             <Route path="/price-insights" element={<PriceInsights />} />
+            <Route path="/ai-chat" element={<AIChatPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
@@ -108,6 +111,8 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        {/* 🤖 Global Floating AI Assistant */}
+        <KisanMitraChatWidget />
       </div>
     </AuthProvider>
   )
