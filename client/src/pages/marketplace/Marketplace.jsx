@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import api from '../../services/api.js'
+import { useLanguage } from '../../context/LanguageContext.jsx'
 import { getProductImageUrl } from '../../utils/imageHelper.js'
 import { VerifiedBadge } from '../../components/ui/Badge.jsx'
 import { ProductSkeleton } from '../../components/ui/LoadingSkeleton.jsx'
@@ -21,17 +22,8 @@ import {
   CheckCircle2,
 } from 'lucide-react'
 
-const CATEGORIES = [
-  { name: 'All', icon: '🌾' },
-  { name: 'Vegetables', icon: '🥦' },
-  { name: 'Fruits', icon: '🍎' },
-  { name: 'Grains', icon: '🌾' },
-  { name: 'Pulses', icon: '🫘' },
-  { name: 'Spices', icon: '🌶️' },
-  { name: 'Others', icon: '📦' },
-]
-
 export const Marketplace = () => {
+  const { t, currentLanguage } = useLanguage()
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -46,6 +38,16 @@ export const Marketplace = () => {
   const [verifiedOnly, setVerifiedOnly] = useState(false)
   const [page, setPage] = useState(1)
   const [pagination, setPagination] = useState({ page: 1, limit: 12, total: 0, pages: 1 })
+
+  const CATEGORIES = [
+    { key: 'All', name: t('cat_all', 'All Produce'), icon: '🌾' },
+    { key: 'Vegetables', name: t('cat_vegetables', 'Vegetables'), icon: '🥦' },
+    { key: 'Fruits', name: t('cat_fruits', 'Fruits'), icon: '🍎' },
+    { key: 'Grains', name: t('cat_grains', 'Grains'), icon: '🌾' },
+    { key: 'Pulses', name: t('cat_pulses', 'Pulses'), icon: '🫘' },
+    { key: 'Spices', name: t('cat_spices', 'Spices'), icon: '🌶️' },
+    { key: 'Others', name: t('cat_others', 'Others'), icon: '📦' },
+  ]
 
   const fetchProducts = useCallback(async () => {
     try {
@@ -101,11 +103,11 @@ export const Marketplace = () => {
         <div className="relative z-10 max-w-3xl space-y-3">
           <div className="inline-flex items-center space-x-2 bg-emerald-700/60 border border-emerald-500/40 px-3 py-1 rounded-full text-xs font-bold text-emerald-200 uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            <span>Farm-Direct Wholesale & Retail</span>
+            <span>{t('market_badge')}</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight">Agricultural Marketplace</h1>
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight">{t('market_title')}</h1>
           <p className="text-emerald-100 text-sm sm:text-base leading-relaxed max-w-2xl font-medium">
-            Browse authentic harvests directly from verified Indian farmers. Guaranteed transparent Mandi price benchmarking and zero intermediary markups.
+            {t('market_desc')}
           </p>
         </div>
         <div className="absolute right-0 top-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -114,12 +116,12 @@ export const Marketplace = () => {
       {/* Category Pills Slider */}
       <div className="flex items-center space-x-2.5 overflow-x-auto pb-2 scrollbar-none">
         {CATEGORIES.map((cat) => {
-          const isSelected = selectedCategory === cat.name
+          const isSelected = selectedCategory === cat.key
           return (
             <button
-              key={cat.name}
+              key={cat.key}
               onClick={() => {
-                setSelectedCategory(cat.name)
+                setSelectedCategory(cat.key)
                 setPage(1)
               }}
               className={`flex items-center space-x-1.5 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all whitespace-nowrap shadow-sm ${
@@ -149,7 +151,7 @@ export const Marketplace = () => {
                 setSearch(e.target.value)
                 setPage(1)
               }}
-              placeholder="Search produce by name, crop type, or location (e.g. Tomatoes, Nashik)..."
+              placeholder={t('market_search_placeholder')}
               className="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-slate-800 text-sm font-medium transition-all"
             />
           </div>
@@ -157,7 +159,7 @@ export const Marketplace = () => {
           {/* Sort Selector */}
           <div className="md:col-span-4 flex items-center space-x-2">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">
-              Sort:
+              {t('market_filter_sort')}:
             </span>
             <select
               value={sortBy}
@@ -167,9 +169,9 @@ export const Marketplace = () => {
               }}
               className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-3.5 py-2.5 text-sm font-semibold focus:ring-2 focus:ring-emerald-500 outline-none text-slate-800"
             >
-              <option value="newest">Fresh Arrivals (Newest)</option>
-              <option value="price_asc">Price: Low to High</option>
-              <option value="price_desc">Price: High to Low</option>
+              <option value="newest">{t('market_sort_newest')}</option>
+              <option value="price_asc">{t('market_sort_price_low')}</option>
+              <option value="price_desc">{t('market_sort_price_high')}</option>
             </select>
           </div>
         </div>
@@ -178,7 +180,9 @@ export const Marketplace = () => {
         <div className="pt-3 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
           {/* Location Input */}
           <div>
-            <label className="block text-xs font-bold text-slate-600 mb-1">Location / District</label>
+            <label className="block text-xs font-bold text-slate-600 mb-1">
+              {t('market_filter_location')}
+            </label>
             <input
               type="text"
               value={locationFilter}
@@ -186,14 +190,14 @@ export const Marketplace = () => {
                 setLocationFilter(e.target.value)
                 setPage(1)
               }}
-              placeholder="Filter by city/state..."
+              placeholder="e.g. Coimbatore, Nashik..."
               className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium focus:ring-2 focus:ring-emerald-500 outline-none text-slate-800"
             />
           </div>
 
           {/* Min Price */}
           <div>
-            <label className="block text-xs font-bold text-slate-600 mb-1">Min Price (₹)</label>
+            <label className="block text-xs font-bold text-slate-600 mb-1">{t('market_filter_min_price')}</label>
             <input
               type="number"
               min="0"
@@ -209,7 +213,7 @@ export const Marketplace = () => {
 
           {/* Max Price */}
           <div>
-            <label className="block text-xs font-bold text-slate-600 mb-1">Max Price (₹)</label>
+            <label className="block text-xs font-bold text-slate-600 mb-1">{t('market_filter_max_price')}</label>
             <input
               type="number"
               min="0"
@@ -218,24 +222,25 @@ export const Marketplace = () => {
                 setMaxPrice(e.target.value)
                 setPage(1)
               }}
-              placeholder="500"
+              placeholder="5000"
               className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium focus:ring-2 focus:ring-emerald-500 outline-none text-slate-800"
             />
           </div>
 
           {/* Verified Toggle */}
-          <div className="flex items-center space-x-2 pt-2">
-            <label className="flex items-center space-x-2 cursor-pointer text-xs font-bold text-slate-700">
-              <input
-                type="checkbox"
-                checked={verifiedOnly}
-                onChange={(e) => setVerifiedOnly(e.target.checked)}
-                className="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 border-slate-300"
-              />
-              <span className="flex items-center space-x-1">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>Verified Only</span>
-              </span>
+          <div className="flex items-center space-x-2 h-10 px-2">
+            <input
+              type="checkbox"
+              id="verifiedOnly"
+              checked={verifiedOnly}
+              onChange={(e) => {
+                setVerifiedOnly(e.target.checked)
+                setPage(1)
+              }}
+              className="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 border-slate-300"
+            />
+            <label htmlFor="verifiedOnly" className="text-xs font-bold text-slate-700 select-none cursor-pointer">
+              {t('market_verified_toggle')}
             </label>
           </div>
 
@@ -246,7 +251,7 @@ export const Marketplace = () => {
               className="w-full flex items-center justify-center space-x-1.5 border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold py-2 px-3 rounded-xl text-xs transition-colors"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              <span>Reset Filters</span>
+              <span>{t('market_clear_filters')}</span>
             </button>
           </div>
         </div>
@@ -256,10 +261,10 @@ export const Marketplace = () => {
       <div className="flex justify-between items-center px-1">
         <h2 className="text-lg font-black text-slate-800 flex items-center space-x-2">
           <SlidersHorizontal className="w-4 h-4 text-emerald-600" />
-          <span>Available Farm Produce</span>
+          <span>{t('market_title')}</span>
           {!loading && (
             <span className="text-xs bg-emerald-100 text-emerald-900 px-2.5 py-0.5 rounded-full font-bold">
-              {pagination.total || products.length} available
+              {pagination.total || products.length}
             </span>
           )}
         </h2>
@@ -286,7 +291,7 @@ export const Marketplace = () => {
         <EmptyState
           title="No Produce Matches Your Filters"
           description="Try broadening your search term, clearing category filters, or exploring all fresh arrivals."
-          actionText="Reset All Filters"
+          actionText={t('market_clear_filters')}
           onAction={handleClearFilters}
         />
       ) : (
@@ -347,7 +352,7 @@ export const Marketplace = () => {
                       <div className="flex items-center text-slate-500 font-medium">
                         <Tag className="w-3.5 h-3.5 text-amber-500 mr-1.5 flex-shrink-0" />
                         <span>
-                          Stock: <strong className="text-slate-800 font-bold">{product.quantity} {product.unit}</strong> available
+                          {t('market_stock')}: <strong className="text-slate-800 font-bold">{product.quantity} {product.unit}</strong>
                         </span>
                       </div>
                     </div>
@@ -357,7 +362,7 @@ export const Marketplace = () => {
                   <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
                     <div>
                       <span className="text-[11px] text-slate-400 block font-semibold uppercase tracking-wider">
-                        Direct Price
+                        {t('price_direct_farm')}
                       </span>
                       <div className="flex items-baseline space-x-0.5">
                         <span className="text-xl font-black text-emerald-800">
@@ -372,7 +377,7 @@ export const Marketplace = () => {
                       className="inline-flex items-center space-x-1.5 bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white font-bold px-3.5 py-2 rounded-xl text-xs transition-all border border-emerald-200 hover:border-emerald-600 shadow-sm"
                     >
                       <Eye className="w-3.5 h-3.5" />
-                      <span>View Details</span>
+                      <span>{t('market_btn_details')}</span>
                     </Link>
                   </div>
                 </div>
@@ -388,22 +393,18 @@ export const Marketplace = () => {
           <button
             onClick={() => setPage((p) => Math.max(p - 1, 1))}
             disabled={page === 1}
-            className="flex items-center space-x-1.5 px-4 py-2 border border-slate-300 rounded-xl text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-40 transition-colors shadow-sm"
+            className="p-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
-            <span>Previous</span>
           </button>
-
-          <span className="text-xs font-black text-slate-700 bg-emerald-50 px-3.5 py-1.5 rounded-xl border border-emerald-200">
-            Page {pagination.page} of {pagination.pages}
+          <span className="text-xs font-bold text-slate-600">
+            Page {page} of {pagination.pages}
           </span>
-
           <button
             onClick={() => setPage((p) => Math.min(p + 1, pagination.pages))}
-            disabled={page >= pagination.pages}
-            className="flex items-center space-x-1.5 px-4 py-2 border border-slate-300 rounded-xl text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 disabled:opacity-40 transition-colors shadow-sm"
+            disabled={page === pagination.pages}
+            className="p-2.5 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
-            <span>Next</span>
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>

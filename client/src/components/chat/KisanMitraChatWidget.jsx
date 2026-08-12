@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import api from '../../services/api.js'
+import { useLanguage } from '../../context/LanguageContext.jsx'
 import {
   MessageSquare,
   X,
@@ -15,29 +16,29 @@ import {
   ShieldCheck,
   Truck,
   HelpCircle,
+  Globe,
 } from 'lucide-react'
 
-const SUGGESTED_PROMPTS = [
-  { text: 'Compare Mandi vs Farm Rates', icon: TrendingUp },
-  { text: 'Organic Pest Control Tips', icon: Sprout },
-  { text: 'How to get Produce Quality Verified?', icon: ShieldCheck },
-  { text: 'How to track crop dispatch & delivery?', icon: Truck },
-]
-
 export const KisanMitraChatWidget = () => {
+  const { t, currentLanguage, activeLangObj } = useLanguage()
   const [isOpen, setIsOpen] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
   const [input, setInput] = useState('')
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      sender: 'bot',
-      text: '🌾 **Namaste! I am KisanMitra AI, your agricultural & market assistant.**\n\nHow can I help you today with crop health, APMC Mandi price benchmarks, or direct marketplace orders?',
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    },
-  ])
+  const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(false)
   const messagesEndRef = useRef(null)
+
+  // Reset welcome message on language switch
+  useEffect(() => {
+    setMessages([
+      {
+        id: 1,
+        sender: 'bot',
+        text: t('ai_welcome'),
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      },
+    ])
+  }, [currentLanguage])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -48,6 +49,13 @@ export const KisanMitraChatWidget = () => {
       scrollToBottom()
     }
   }, [messages, isOpen])
+
+  const suggestedPrompts = [
+    { text: t('ai_chip_mandi'), icon: TrendingUp },
+    { text: t('ai_chip_pest'), icon: Sprout },
+    { text: t('ai_chip_verify'), icon: ShieldCheck },
+    { text: t('ai_chip_track'), icon: Truck },
+  ]
 
   const handleSend = async (textToSend) => {
     const query = (textToSend || input).trim()
@@ -65,7 +73,7 @@ export const KisanMitraChatWidget = () => {
     setLoading(true)
 
     try {
-      const res = await api.post('/chat', { message: query })
+      const res = await api.post('/chat', { message: query, language: currentLanguage })
       if (res.data?.success && res.data?.data) {
         const botMsg = {
           id: Date.now() + 1,
@@ -94,16 +102,14 @@ export const KisanMitraChatWidget = () => {
       {
         id: 1,
         sender: 'bot',
-        text: '🌾 Chat cleared. How can KisanMitra assist your farming or produce purchasing today?',
+        text: t('ai_welcome'),
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       },
     ])
   }
 
-  // Simple Markdown-like formatter for bold, bullet points, and linebreaks
   const formatMessage = (content) => {
     return content.split('\n').map((line, idx) => {
-      // Bold formatter
       const parts = line.split(/(\*\*.*?\*\*)/g)
       return (
         <p key={idx} className={line.startsWith('•') || line.startsWith('-') ? 'pl-2 my-0.5' : 'my-1'}>
@@ -133,8 +139,8 @@ export const KisanMitraChatWidget = () => {
             <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full border-2 border-emerald-800"></span>
           </div>
           <div className="text-left hidden sm:block">
-            <p className="text-xs font-black tracking-wide leading-tight">KisanMitra AI</p>
-            <p className="text-[10px] text-emerald-200 font-bold">Ask Agri & Mandi Expert</p>
+            <p className="text-xs font-black tracking-wide leading-tight">{t('ai_title')}</p>
+            <p className="text-[10px] text-emerald-200 font-bold">{activeLangObj.native} • {t('ai_subtitle')}</p>
           </div>
         </button>
       )}
@@ -154,14 +160,14 @@ export const KisanMitraChatWidget = () => {
               </div>
               <div>
                 <div className="flex items-center space-x-1.5">
-                  <h3 className="text-sm font-black">KisanMitra AI</h3>
+                  <h3 className="text-sm font-black">{t('ai_title')}</h3>
                   <span className="text-[9px] bg-amber-400 text-slate-950 font-black px-1.5 py-0.2 rounded-md uppercase tracking-wider">
-                    Gemini 3.6
+                    {activeLangObj.flag} {activeLangObj.native}
                   </span>
                 </div>
                 <p className="text-[11px] text-emerald-200 font-medium flex items-center space-x-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span>Agri & Mandi Intelligence Online</span>
+                  <span>{t('ai_subtitle')}</span>
                 </p>
               </div>
             </div>
@@ -169,7 +175,7 @@ export const KisanMitraChatWidget = () => {
             <div className="flex items-center space-x-1 text-emerald-200">
               <button
                 onClick={handleClearChat}
-                title="Clear Chat History"
+                title={t('ai_clear')}
                 className="p-1.5 hover:bg-emerald-800/80 rounded-xl transition-colors text-xs"
               >
                 <RotateCcw className="w-4 h-4" />
@@ -193,7 +199,7 @@ export const KisanMitraChatWidget = () => {
 
           {/* Quick Action Suggestion Chips */}
           <div className="bg-stone-50 border-b border-slate-200/80 px-3 py-2 flex items-center space-x-2 overflow-x-auto scrollbar-none">
-            {SUGGESTED_PROMPTS.map((p, idx) => {
+            {suggestedPrompts.map((p, idx) => {
               const Icon = p.icon
               return (
                 <button
@@ -269,7 +275,7 @@ export const KisanMitraChatWidget = () => {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask about crop health, Mandi rates, orders..."
+              placeholder={t('ai_input_placeholder')}
               className="flex-1 bg-stone-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
               disabled={loading}
             />

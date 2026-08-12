@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext.jsx'
+import { useLanguage } from '../../context/LanguageContext.jsx'
+import LanguageSelector from './LanguageSelector.jsx'
 import {
   Sprout,
   ShoppingBag,
@@ -25,6 +27,7 @@ import {
 
 export const Navbar = () => {
   const { user, logout } = useAuth()
+  const { t } = useLanguage()
   const navigate = useNavigate()
   const location = useLocation()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -55,7 +58,7 @@ export const Navbar = () => {
             <div>
               <span className="text-xl font-black tracking-tight text-white">KisanConnect</span>
               <span className="hidden sm:inline-block ml-2 text-[10px] uppercase font-bold tracking-wider bg-emerald-800 text-amber-300 px-2 py-0.5 rounded-full border border-emerald-700">
-                Direct Agri Trade
+                {t('tag_direct_trade')}
               </span>
             </div>
           </Link>
@@ -71,7 +74,7 @@ export const Navbar = () => {
               }`}
             >
               <HomeIcon className="w-4 h-4" />
-              <span>Home</span>
+              <span>{t('nav_home')}</span>
             </Link>
 
             <Link
@@ -83,7 +86,7 @@ export const Navbar = () => {
               }`}
             >
               <ShoppingBag className="w-4 h-4" />
-              <span>Marketplace</span>
+              <span>{t('nav_marketplace')}</span>
             </Link>
 
             <Link
@@ -95,7 +98,7 @@ export const Navbar = () => {
               }`}
             >
               <TrendingUp className="w-4 h-4 text-amber-300" />
-              <span>Price Insights</span>
+              <span>{t('nav_price_insights')}</span>
             </Link>
 
             {/* 🤖 KisanMitra AI Navigation Link */}
@@ -108,7 +111,7 @@ export const Navbar = () => {
               }`}
             >
               <Bot className="w-4 h-4 text-amber-300" />
-              <span>KisanMitra AI</span>
+              <span>{t('nav_ai_chat')}</span>
             </Link>
 
             {/* Authenticated Links for Buyers/Consumers */}
@@ -122,7 +125,7 @@ export const Navbar = () => {
                 }`}
               >
                 <ClipboardList className="w-4 h-4" />
-                <span>My Orders</span>
+                <span>{t('nav_my_orders')}</span>
               </Link>
             )}
 
@@ -138,7 +141,7 @@ export const Navbar = () => {
                   }`}
                 >
                   <Truck className="w-4 h-4" />
-                  <span>Customer Orders</span>
+                  <span>{t('nav_customer_orders')}</span>
                 </Link>
                 <Link
                   to="/farmer/products"
@@ -149,14 +152,14 @@ export const Navbar = () => {
                   }`}
                 >
                   <PackageCheck className="w-4 h-4" />
-                  <span>My Produce</span>
+                  <span>{t('nav_my_produce')}</span>
                 </Link>
                 <Link
                   to="/farmer/products/add"
                   className="flex items-center space-x-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3.5 py-1.5 rounded-xl text-xs transition-transform duration-150 hover:scale-105 shadow-sm"
                 >
                   <PlusCircle className="w-4 h-4" />
-                  <span>List Produce</span>
+                  <span>{t('nav_list_produce')}</span>
                 </Link>
               </>
             )}
@@ -173,7 +176,7 @@ export const Navbar = () => {
                   }`}
                 >
                   <LayoutDashboard className="w-4 h-4" />
-                  <span>Dashboard</span>
+                  <span>{t('nav_dashboard')}</span>
                 </Link>
                 <Link
                   to="/admin/verifications"
@@ -184,14 +187,17 @@ export const Navbar = () => {
                   }`}
                 >
                   <ShieldCheck className="w-4 h-4" />
-                  <span>Verifications</span>
+                  <span>{t('nav_verifications')}</span>
                 </Link>
               </>
             )}
           </div>
 
-          {/* User Profile / Auth Area */}
+          {/* Right Section: Language Selector + User Profile / Auth Area */}
           <div className="hidden md:flex items-center space-x-3">
+            {/* 🌐 Multi-Language Selector Dropdown */}
+            <LanguageSelector />
+
             {user ? (
               <div className="relative">
                 <button
@@ -216,7 +222,7 @@ export const Navbar = () => {
                 {userDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-slate-200 py-2 text-slate-800 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                     <div className="px-4 py-2 border-b border-slate-100">
-                      <p className="text-xs text-slate-500">Signed in as</p>
+                      <p className="text-xs text-slate-500">{t('nav_signed_in_as')}</p>
                       <p className="text-xs font-bold text-slate-900 truncate">{user.email}</p>
                     </div>
 
@@ -228,7 +234,7 @@ export const Navbar = () => {
                           className="flex items-center space-x-2 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700"
                         >
                           <PackageCheck className="w-4 h-4" />
-                          <span>My Produce Listings</span>
+                          <span>{t('nav_my_produce')}</span>
                         </Link>
                         <Link
                           to="/farmer/orders"
@@ -236,7 +242,7 @@ export const Navbar = () => {
                           className="flex items-center space-x-2 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700"
                         >
                           <Truck className="w-4 h-4" />
-                          <span>Customer Orders</span>
+                          <span>{t('nav_customer_orders')}</span>
                         </Link>
                       </>
                     )}
@@ -248,7 +254,7 @@ export const Navbar = () => {
                         className="flex items-center space-x-2 px-4 py-2 text-xs font-semibold text-purple-700 hover:bg-purple-50"
                       >
                         <LayoutDashboard className="w-4 h-4" />
-                        <span>Admin Dashboard</span>
+                        <span>{t('nav_dashboard')}</span>
                       </Link>
                     )}
 
@@ -258,7 +264,7 @@ export const Navbar = () => {
                       className="flex items-center space-x-2 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700"
                     >
                       <ClipboardList className="w-4 h-4" />
-                      <span>My Purchase Orders</span>
+                      <span>{t('nav_my_orders')}</span>
                     </Link>
 
                     <Link
@@ -267,7 +273,7 @@ export const Navbar = () => {
                       className="flex items-center space-x-2 px-4 py-2 text-xs font-semibold text-amber-700 hover:bg-amber-50"
                     >
                       <Bot className="w-4 h-4 text-amber-600" />
-                      <span>KisanMitra AI Assistant</span>
+                      <span>{t('nav_ai_chat')}</span>
                     </Link>
 
                     <div className="border-t border-slate-100 my-1"></div>
@@ -277,7 +283,7 @@ export const Navbar = () => {
                       className="w-full flex items-center space-x-2 px-4 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 text-left"
                     >
                       <LogOut className="w-4 h-4" />
-                      <span>Sign Out</span>
+                      <span>{t('nav_logout')}</span>
                     </button>
                   </div>
                 )}
@@ -289,14 +295,14 @@ export const Navbar = () => {
                   className="flex items-center space-x-1.5 border border-emerald-700 hover:bg-emerald-800 text-white px-3.5 py-1.5 rounded-xl text-xs font-bold transition-colors"
                 >
                   <LogIn className="w-3.5 h-3.5" />
-                  <span>Login</span>
+                  <span>{t('nav_login')}</span>
                 </Link>
                 <Link
                   to="/register"
                   className="flex items-center space-x-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 px-3.5 py-1.5 rounded-xl text-xs font-black transition-colors shadow-sm"
                 >
                   <UserPlus className="w-3.5 h-3.5" />
-                  <span>Register</span>
+                  <span>{t('nav_register')}</span>
                 </Link>
               </div>
             )}
@@ -317,103 +323,108 @@ export const Navbar = () => {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-emerald-950/95 border-t border-emerald-800/80 px-4 pt-3 pb-6 space-y-2 animate-in slide-in-from-top-2 duration-150">
-          <Link
-            to="/"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center space-x-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-emerald-100 hover:bg-emerald-900"
-          >
-            <HomeIcon className="w-4 h-4" />
-            <span>Home</span>
-          </Link>
+        <div className="md:hidden bg-emerald-950/95 border-t border-emerald-800/80 px-4 pt-3 pb-6 space-y-2.5 animate-in slide-in-from-top-2 duration-150">
+          {/* Mobile Language Selector */}
+          <LanguageSelector isMobile={true} />
 
-          <Link
-            to="/marketplace"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center space-x-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-emerald-100 hover:bg-emerald-900"
-          >
-            <ShoppingBag className="w-4 h-4" />
-            <span>Marketplace</span>
-          </Link>
-
-          <Link
-            to="/price-insights"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center space-x-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-amber-300 hover:bg-emerald-900"
-          >
-            <TrendingUp className="w-4 h-4" />
-            <span>Price Insights</span>
-          </Link>
-
-          <Link
-            to="/ai-chat"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center space-x-2 px-3 py-2.5 rounded-xl text-sm font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40"
-          >
-            <Bot className="w-4 h-4" />
-            <span>KisanMitra AI Assistant</span>
-          </Link>
-
-          {user && (
+          <div className="border-t border-emerald-800/80 pt-2 space-y-1">
             <Link
-              to="/my-orders"
+              to="/"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center space-x-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-emerald-100 hover:bg-emerald-900"
+              className="flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-semibold text-emerald-100 hover:bg-emerald-900"
             >
-              <ClipboardList className="w-4 h-4" />
-              <span>My Orders</span>
+              <HomeIcon className="w-4 h-4" />
+              <span>{t('nav_home')}</span>
             </Link>
-          )}
 
-          {user && user.role === 'FARMER' && (
-            <>
-              <Link
-                to="/farmer/products"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center space-x-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-emerald-100 hover:bg-emerald-900"
-              >
-                <PackageCheck className="w-4 h-4" />
-                <span>My Produce</span>
-              </Link>
-              <Link
-                to="/farmer/orders"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center space-x-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-amber-200 hover:bg-emerald-900"
-              >
-                <Truck className="w-4 h-4" />
-                <span>Customer Orders</span>
-              </Link>
-              <Link
-                to="/farmer/products/add"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center space-x-2 bg-amber-500 text-slate-950 px-3 py-2.5 rounded-xl text-sm font-bold shadow-sm"
-              >
-                <PlusCircle className="w-4 h-4" />
-                <span>List Produce</span>
-              </Link>
-            </>
-          )}
+            <Link
+              to="/marketplace"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-semibold text-emerald-100 hover:bg-emerald-900"
+            >
+              <ShoppingBag className="w-4 h-4" />
+              <span>{t('nav_marketplace')}</span>
+            </Link>
 
-          {user && user.role === 'ADMIN' && (
-            <>
+            <Link
+              to="/price-insights"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-semibold text-amber-300 hover:bg-emerald-900"
+            >
+              <TrendingUp className="w-4 h-4" />
+              <span>{t('nav_price_insights')}</span>
+            </Link>
+
+            <Link
+              to="/ai-chat"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40"
+            >
+              <Bot className="w-4 h-4" />
+              <span>{t('nav_ai_chat')}</span>
+            </Link>
+
+            {user && (
               <Link
-                to="/admin/dashboard"
+                to="/my-orders"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center space-x-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-purple-300 hover:bg-emerald-900"
+                className="flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-semibold text-emerald-100 hover:bg-emerald-900"
               >
-                <LayoutDashboard className="w-4 h-4" />
-                <span>Admin Dashboard</span>
+                <ClipboardList className="w-4 h-4" />
+                <span>{t('nav_my_orders')}</span>
               </Link>
-              <Link
-                to="/admin/verifications"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center space-x-2 px-3 py-2.5 rounded-xl text-sm font-semibold text-amber-300 hover:bg-emerald-900"
-              >
-                <ShieldCheck className="w-4 h-4" />
-                <span>Verifications Queue</span>
-              </Link>
-            </>
-          )}
+            )}
+
+            {user && user.role === 'FARMER' && (
+              <>
+                <Link
+                  to="/farmer/products"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-semibold text-emerald-100 hover:bg-emerald-900"
+                >
+                  <PackageCheck className="w-4 h-4" />
+                  <span>{t('nav_my_produce')}</span>
+                </Link>
+                <Link
+                  to="/farmer/orders"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-semibold text-amber-200 hover:bg-emerald-900"
+                >
+                  <Truck className="w-4 h-4" />
+                  <span>{t('nav_customer_orders')}</span>
+                </Link>
+                <Link
+                  to="/farmer/products/add"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center space-x-2 bg-amber-500 text-slate-950 px-3 py-2 rounded-xl text-sm font-bold shadow-sm"
+                >
+                  <PlusCircle className="w-4 h-4" />
+                  <span>{t('nav_list_produce')}</span>
+                </Link>
+              </>
+            )}
+
+            {user && user.role === 'ADMIN' && (
+              <>
+                <Link
+                  to="/admin/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-semibold text-purple-300 hover:bg-emerald-900"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  <span>{t('nav_dashboard')}</span>
+                </Link>
+                <Link
+                  to="/admin/verifications"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center space-x-2 px-3 py-2 rounded-xl text-sm font-semibold text-amber-300 hover:bg-emerald-900"
+                >
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>{t('nav_verifications')}</span>
+                </Link>
+              </>
+            )}
+          </div>
 
           <div className="border-t border-emerald-800/80 pt-3 mt-3">
             {user ? (
@@ -427,7 +438,7 @@ export const Navbar = () => {
                   className="flex items-center space-x-1.5 bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm"
                 >
                   <LogOut className="w-3.5 h-3.5" />
-                  <span>Logout</span>
+                  <span>{t('nav_logout')}</span>
                 </button>
               </div>
             ) : (
@@ -438,7 +449,7 @@ export const Navbar = () => {
                   className="flex items-center justify-center space-x-1 border border-emerald-700 text-white py-2 rounded-xl text-xs font-bold text-center"
                 >
                   <LogIn className="w-3.5 h-3.5" />
-                  <span>Login</span>
+                  <span>{t('nav_login')}</span>
                 </Link>
                 <Link
                   to="/register"
@@ -446,7 +457,7 @@ export const Navbar = () => {
                   className="flex items-center justify-center space-x-1 bg-amber-500 text-slate-950 py-2 rounded-xl text-xs font-black text-center shadow-sm"
                 >
                   <UserPlus className="w-3.5 h-3.5" />
-                  <span>Register</span>
+                  <span>{t('nav_register')}</span>
                 </Link>
               </div>
             )}

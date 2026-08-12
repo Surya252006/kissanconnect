@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { useLanguage } from '../../context/LanguageContext.jsx'
 import {
   ChevronLeft,
   ChevronRight,
@@ -13,64 +14,65 @@ import {
   Award,
 } from 'lucide-react'
 
-const SLIDES = [
-  {
-    id: 1,
-    image: '/images/hero_banner.png',
-    tag: 'Direct Farm Harvest',
-    title: 'From Farm to Buyer, Without the Middleman.',
-    subtitle: 'Connect directly with verified local farmers, discover transparent APMC Mandi prices, and get fresh crops delivered.',
-    farmerName: 'Ramesh Patel • 15+ Acres Organic Farmer',
-    farmerLocation: 'Coimbatore Agri Cluster, Tamil Nadu',
-    badgeText: 'GI & Organic Certified',
-    stat: '0% Middleman Cut',
-    ctaText: 'Explore Marketplace',
-    ctaLink: '/marketplace',
-  },
-  {
-    id: 2,
-    image: '/images/slide_women_farmers.png',
-    tag: 'Women-Led Agriculture',
-    title: 'Empowering Women Farmers Across Rural India',
-    subtitle: 'Direct market linkages enable women agricultural collectives to retain 100% of their harvest profits.',
-    farmerName: 'Sunita Devi & Organic Collective',
-    farmerLocation: 'Nashik Valley, Maharashtra',
-    badgeText: '100% Direct Payouts',
-    stat: '4.9★ Quality Rating',
-    ctaText: 'Browse Fresh Harvests',
-    ctaLink: '/marketplace',
-  },
-  {
-    id: 3,
-    image: '/images/slide_smart_farmer.png',
-    tag: 'Digital Agri-Trade',
-    title: 'Real-Time APMC Mandi Price Intelligence',
-    subtitle: 'Transparent market benchmarking helps producers and buyers trade at equitable, fair market rates.',
-    farmerName: 'Gurpreet Singh • Wheat & Grain Producer',
-    farmerLocation: 'Ludhiana, Punjab',
-    badgeText: 'Smart Inventory Tracking',
-    stat: 'Same-Day Dispatch',
-    ctaText: 'View Mandi Benchmarks',
-    ctaLink: '/price-insights',
-  },
-  {
-    id: 4,
-    image: '/images/slide_orchard_harvest.png',
-    tag: 'Fresh Orchard Harvests',
-    title: 'Direct Orchard Produce Straight to Retailers',
-    subtitle: 'Source farm-fresh fruits, vegetables, and aromatic spices with certified GI provenance and zero markup.',
-    farmerName: 'Ananya Roy • Spice & Fruit Grower',
-    farmerLocation: 'Wayanad, Kerala',
-    badgeText: 'Direct Farm-to-Fork',
-    stat: '15-30% Lower Rates',
-    ctaText: 'Start Direct Sourcing',
-    ctaLink: '/marketplace',
-  },
-]
-
 export const FarmerHeroSlider = () => {
+  const { t, currentLanguage } = useLanguage()
   const [current, setCurrent] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+
+  const SLIDES = [
+    {
+      id: 1,
+      image: '/images/hero_banner.png',
+      tag: t('tag_direct_trade', 'Direct Farm Harvest'),
+      title: `${t('hero_title_1', 'From Farm to Buyer,')} ${t('hero_title_2', 'Without the Middleman.')}`,
+      subtitle: t('hero_subtitle', 'Connect directly with verified local farmers, discover transparent APMC Mandi prices, and get fresh crops delivered.'),
+      farmerName: 'Ramesh Patel • 15+ Acres Organic Farmer',
+      farmerLocation: 'Coimbatore Agri Cluster, Tamil Nadu',
+      badgeText: t('hero_floating_quality', 'GI & Organic Certified'),
+      stat: t('hero_floating_savings', '15–30% Below Mandi Markup'),
+      ctaText: t('hero_cta_explore', 'Explore Marketplace'),
+      ctaLink: '/marketplace',
+    },
+    {
+      id: 2,
+      image: '/images/slide_women_farmers.png',
+      tag: currentLanguage === 'ta' ? 'பெண்கள் வழிநடத்தும் விவசாயம்' : currentLanguage === 'te' ? 'మహిళా రైతుల స్వావలంబన' : currentLanguage === 'kn' ? 'ಮಹಿಳಾ ನೇತೃತ್ವದ ಕೃಷಿ' : currentLanguage === 'hi' ? 'महिला किसान सशक्तिकरण' : 'Women-Led Agriculture',
+      title: currentLanguage === 'ta' ? 'கிராமப்புற பெண் விவசாயிகளின் நேரடி முன்னேற்றம்' : currentLanguage === 'te' ? 'గ్రామీణ మహిళా రైతులకు ప్రత్యక్ష మార్కెట్' : currentLanguage === 'kn' ? 'ಗ್ರಾಮೀಣ ಮಹಿಳಾ ರೈತರ ಸಶಕ್ತೀಕರಣ' : currentLanguage === 'hi' ? 'ग्रामीण महिला किसानों को सीधा बाजार' : 'Empowering Women Farmers Across Rural India',
+      subtitle: currentLanguage === 'ta' ? 'நேரடி சந்தை இணைப்பு மூலம் பெண் விவசாயிகள் 100% முழு லாபத்தையும் பெறுகின்றனர்.' : currentLanguage === 'te' ? 'ప్రత్యక్ష మార్కెట్ అనుసంధానం ద్వారా మహిళా రైతులు 100% పూర్తి లాభాన్ని పొందుతున్నారు.' : currentLanguage === 'kn' ? 'ನೇರ ಮಾರುಕಟ್ಟೆ ಸಂಪರ್ಕದ ಮೂಲಕ ಮಹಿಳಾ ರೈತರು 100% ಪೂರ್ಣ ಲಾಭವನ್ನು ಪಡೆಯುತ್ತಾರೆ.' : 'Direct market linkages enable women agricultural collectives to retain 100% of their harvest profits.',
+      farmerName: 'Sunita Devi & Organic Collective',
+      farmerLocation: 'Nashik Valley, Maharashtra',
+      badgeText: t('hero_badge_payouts', '100% Direct Payouts'),
+      stat: '4.9★ Quality Rating',
+      ctaText: t('hero_cta_explore', 'Browse Fresh Harvests'),
+      ctaLink: '/marketplace',
+    },
+    {
+      id: 3,
+      image: '/images/slide_smart_farmer.png',
+      tag: currentLanguage === 'ta' ? 'டிஜிட்டல் மண்டி தொழில்நுட்பம்' : currentLanguage === 'te' ? 'డిజిటల్ వ్యవసాయ వాణిజ్యం' : currentLanguage === 'kn' ? 'ಡಿಜಿಟಲ್ ಕೃಷಿ ಮಾರುಕಟ್ಟೆ' : currentLanguage === 'hi' ? 'डिजिटल कृषि व्यापार' : 'Digital Agri-Trade',
+      title: currentLanguage === 'ta' ? 'நேரலை APMC மண்டி விலை ஒப்பீடு' : currentLanguage === 'te' ? 'నిజ-సమయ APMC మండీ ధరల విశ్లేషణ' : currentLanguage === 'kn' ? 'ನೈಜ-ಸಮಯದ APMC ಮಂಡಿ ದರ ಮಾಹಿತಿ' : currentLanguage === 'hi' ? 'रीयल-टाइम APMC मंडी भाव विश्लेषण' : 'Real-Time APMC Mandi Price Intelligence',
+      subtitle: currentLanguage === 'ta' ? 'வெளிப்படையான விலை ஒப்பீடு விவசாயிகள் மற்றும் வாங்குபவர்களுக்கு நியாயமான வர்த்தகத்தை உறுதி செய்கிறது.' : currentLanguage === 'te' ? 'పారదర్శక ధరల పోలిక రైతులు మరియు కొనుగోలుదారులకు న్యాయమైన వాణిజ్యాన్ని అందిస్తుంది.' : 'Transparent market benchmarking helps producers and buyers trade at equitable, fair market rates.',
+      farmerName: 'Gurpreet Singh • Wheat & Grain Producer',
+      farmerLocation: 'Ludhiana, Punjab',
+      badgeText: t('hero_badge_tracking', 'Smart Inventory Tracking'),
+      stat: 'Same-Day Dispatch',
+      ctaText: t('hero_cta_mandi', 'View Mandi Benchmarks'),
+      ctaLink: '/price-insights',
+    },
+    {
+      id: 4,
+      image: '/images/slide_orchard_harvest.png',
+      tag: currentLanguage === 'ta' ? 'புதிய தோட்ட விளைபொருட்கள்' : currentLanguage === 'te' ? 'తాజా తోట పంటలు' : currentLanguage === 'kn' ? 'ತಾಜಾ ತೋಟಗಾರಿಕಾ ಬೆಳೆಗಳು' : 'Fresh Orchard Harvests',
+      title: currentLanguage === 'ta' ? 'பண்ணையிலிருந்து நேரடியாக புதிய பழங்கள் & மசாலாக்கள்' : currentLanguage === 'te' ? 'తోటల నుండి నేరుగా తాజా పండ్లు & మసాలాలు' : 'Direct Orchard Produce Straight to Retailers',
+      subtitle: currentLanguage === 'ta' ? 'சான்றளிக்கப்பட்ட புவிசார் குறியீடு (GI) கொண்ட புதிய பழங்கள் மற்றும் மசாலாக்களை இடைத்தரகர்கள் இன்றி வாங்குங்கள்.' : 'Source farm-fresh fruits, vegetables, and aromatic spices with certified GI provenance and zero markup.',
+      farmerName: 'Ananya Roy • Spice & Fruit Grower',
+      farmerLocation: 'Wayanad, Kerala',
+      badgeText: t('hero_badge_inspected', 'Direct Farm-to-Fork'),
+      stat: '15-30% Lower Rates',
+      ctaText: t('hero_cta_explore', 'Start Direct Sourcing'),
+      ctaLink: '/marketplace',
+    },
+  ]
 
   const nextSlide = () => {
     setCurrent((prev) => (prev === SLIDES.length - 1 ? 0 : prev + 1))
@@ -80,14 +82,13 @@ export const FarmerHeroSlider = () => {
     setCurrent((prev) => (prev === 0 ? SLIDES.length - 1 : prev - 1))
   }
 
-  // Auto-play timer (every 6 seconds)
   useEffect(() => {
     if (isPaused) return
     const timer = setInterval(() => {
       nextSlide()
     }, 6000)
     return () => clearInterval(timer)
-  }, [isPaused, current])
+  }, [isPaused, current, currentLanguage])
 
   const slide = SLIDES[current]
 
@@ -131,7 +132,7 @@ export const FarmerHeroSlider = () => {
             </div>
 
             {/* Main Title */}
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.12]">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.14]">
               {slide.title}
             </h1>
 
@@ -167,7 +168,7 @@ export const FarmerHeroSlider = () => {
                 className="inline-flex items-center space-x-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-bold px-6 py-3.5 rounded-2xl transition-all text-xs sm:text-sm"
               >
                 <Sprout className="w-4 h-4 text-emerald-300" />
-                <span>Join as Farmer</span>
+                <span>{t('hero_cta_join_farmer', 'Join as Farmer')}</span>
               </Link>
             </div>
           </div>

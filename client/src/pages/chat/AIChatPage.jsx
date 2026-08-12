@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import api from '../../services/api.js'
+import { useLanguage } from '../../context/LanguageContext.jsx'
 import {
   Bot,
   User,
@@ -17,25 +18,23 @@ import {
   Info,
 } from 'lucide-react'
 
-const TOPICS = [
-  { id: 'mandi', label: 'Mandi Price Rates', prompt: 'Compare local Mandi rates with KisanConnect direct farm prices for tomatoes, wheat, and onions.', icon: TrendingUp },
-  { id: 'crops', label: 'Crop Advisory & Care', prompt: 'What are the best organic pest control methods and fertilizers for tomato and chilli crops?', icon: Sprout },
-  { id: 'quality', label: 'Produce Verification', prompt: 'How does KisanConnect verify produce quality and GI origin seals for farmers?', icon: ShieldCheck },
-  { id: 'logistics', label: 'Order & Logistics', prompt: 'How does atomic order placement and live multi-stage dispatch tracking work?', icon: Truck },
-]
-
 export const AIChatPage = () => {
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      sender: 'bot',
-      text: '🌾 **Namaste! Welcome to the KisanMitra AI Intelligence Center.**\n\nPowered by Google Gemini and real-time MongoDB agricultural database grounding, I can help you with:\n• **Daily APMC Mandi Price Benchmarks & Savings**\n• **Organic Soil & Pest Management Advisory**\n• **Direct Marketplace Crop Discovery**\n• **Quality Verification & Order Logistics**\n\nSelect a topic from the left or type any farming question below!',
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    },
-  ])
+  const { t, currentLanguage, activeLangObj } = useLanguage()
+  const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const messagesEndRef = useRef(null)
+
+  useEffect(() => {
+    setMessages([
+      {
+        id: 1,
+        sender: 'bot',
+        text: t('ai_welcome'),
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      },
+    ])
+  }, [currentLanguage])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -44,6 +43,33 @@ export const AIChatPage = () => {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  const topics = [
+    {
+      id: 'mandi',
+      label: t('ai_chip_mandi'),
+      prompt: currentLanguage === 'ta' ? 'தக்காளி, வெங்காயம் மற்றும் கோதுமைக்கான மண்டி விலை மற்றும் நேரடி பண்ணை விலையை ஒப்பிட்டு கூறவும்.' : currentLanguage === 'te' ? 'టమోటా, ఉల్లిపాయల మండీ ధర మరియు పొలం ధరల పోలిక చెప్పండి.' : 'Compare local Mandi rates with KisanConnect direct farm prices for tomatoes, wheat, and onions.',
+      icon: TrendingUp,
+    },
+    {
+      id: 'crops',
+      label: t('ai_chip_pest'),
+      prompt: currentLanguage === 'ta' ? 'தக்காளி மற்றும் மிளகாய் பயிர்களில் இயற்கை பூச்சி கட்டுப்பாடு மற்றும் உர மேலாண்மை முறைகளை விளக்குக.' : 'What are the best organic pest control methods and fertilizers for tomato and chilli crops?',
+      icon: Sprout,
+    },
+    {
+      id: 'quality',
+      label: t('ai_chip_verify'),
+      prompt: currentLanguage === 'ta' ? 'கிசான் கனெக்ட் தளத்தில் விளைபொருள் தரம் மற்றும் GI சான்றிதழ் பெறுவது எப்படி?' : 'How does KisanConnect verify produce quality and GI origin seals for farmers?',
+      icon: ShieldCheck,
+    },
+    {
+      id: 'logistics',
+      label: t('ai_chip_track'),
+      prompt: currentLanguage === 'ta' ? 'நேரலை ஆர்டர் விநியோக கண்காணிப்பு மற்றும் டெலிவரி நிலைகள் எவ்வாறு செயல்படுகின்றன?' : 'How does atomic order placement and live multi-stage dispatch tracking work?',
+      icon: Truck,
+    },
+  ]
 
   const handleSend = async (queryText) => {
     const q = (queryText || input).trim()
@@ -61,7 +87,7 @@ export const AIChatPage = () => {
     setLoading(true)
 
     try {
-      const res = await api.post('/chat', { message: q })
+      const res = await api.post('/chat', { message: q, language: currentLanguage })
       if (res.data?.success && res.data?.data) {
         const botMsg = {
           id: Date.now() + 1,
@@ -108,11 +134,11 @@ export const AIChatPage = () => {
         <div className="space-y-2 max-w-2xl">
           <div className="inline-flex items-center space-x-2 bg-emerald-800/80 border border-emerald-500/40 px-3 py-1 rounded-full text-xs font-bold text-amber-300 uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            <span>AI Agricultural Intelligence Hub</span>
+            <span>{activeLangObj.native} • AI Agricultural Intelligence Hub</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight">KisanMitra AI Assistant</h1>
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight">{t('ai_title')}</h1>
           <p className="text-sm text-emerald-100 font-medium">
-            Real-time crop advisory, APMC Mandi benchmarking, and direct market assistance.
+            {t('ai_subtitle')} — Real-time crop advisory, APMC Mandi benchmarking, and direct market assistance.
           </p>
         </div>
 
@@ -122,7 +148,7 @@ export const AIChatPage = () => {
               {
                 id: 1,
                 sender: 'bot',
-                text: '🌾 Chat cleared. Ask any agricultural question or Mandi price comparison!',
+                text: t('ai_welcome'),
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
               },
             ])
@@ -130,7 +156,7 @@ export const AIChatPage = () => {
           className="inline-flex items-center space-x-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-4 py-2.5 rounded-2xl text-xs transition-colors"
         >
           <RotateCcw className="w-4 h-4" />
-          <span>Clear Conversation</span>
+          <span>{t('ai_clear')}</span>
         </button>
       </div>
 
@@ -145,12 +171,12 @@ export const AIChatPage = () => {
             </h3>
 
             <div className="space-y-2.5">
-              {TOPICS.map((t) => {
-                const Icon = t.icon
+              {topics.map((topic) => {
+                const Icon = topic.icon
                 return (
                   <button
-                    key={t.id}
-                    onClick={() => handleSend(t.prompt)}
+                    key={topic.id}
+                    onClick={() => handleSend(topic.prompt)}
                     disabled={loading}
                     className="w-full text-left p-3.5 rounded-2xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/60 transition-all flex items-center justify-between group"
                   >
@@ -160,9 +186,9 @@ export const AIChatPage = () => {
                       </div>
                       <div>
                         <p className="text-xs font-black text-slate-800 group-hover:text-emerald-950">
-                          {t.label}
+                          {topic.label}
                         </p>
-                        <p className="text-[10px] text-slate-500 line-clamp-1">{t.prompt}</p>
+                        <p className="text-[10px] text-slate-500 line-clamp-1">{topic.prompt}</p>
                       </div>
                     </div>
                     <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all" />
@@ -176,10 +202,10 @@ export const AIChatPage = () => {
           <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl p-6 border border-emerald-200 space-y-3">
             <div className="flex items-center space-x-2 text-emerald-900 font-black text-xs uppercase tracking-wider">
               <Info className="w-4 h-4 text-emerald-700" />
-              <span>Context Grounding</span>
+              <span>Multi-Language AI Grounding</span>
             </div>
             <p className="text-xs text-slate-600 leading-relaxed font-medium">
-              KisanMitra combines Google Gemini with real-time active inventory data from KisanConnect’s MongoDB database to provide up-to-date Mandi pricing.
+              KisanMitra supports queries in English, தமிழ் (Tamil), తెలుగు (Telugu), ಕನ್ನಡ (Kannada), हिन्दी (Hindi), and मराठी (Marathi) with real-time APMC Mandi database grounding.
             </p>
           </div>
         </div>
@@ -247,7 +273,7 @@ export const AIChatPage = () => {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask anything about crop disease, organic farming, Mandi price savings..."
+              placeholder={t('ai_input_placeholder')}
               className="flex-1 bg-stone-50 border border-slate-200 rounded-2xl px-5 py-3.5 text-xs font-medium outline-none focus:ring-2 focus:ring-emerald-500 text-slate-800"
               disabled={loading}
             />
@@ -257,7 +283,7 @@ export const AIChatPage = () => {
               className="px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-black rounded-2xl transition-all shadow-md flex items-center space-x-2 text-xs"
             >
               <Send className="w-4 h-4" />
-              <span>Send</span>
+              <span>{t('ai_send')}</span>
             </button>
           </form>
         </div>

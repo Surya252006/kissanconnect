@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext.jsx'
+import { useLanguage } from '../../context/LanguageContext.jsx'
 import api from '../../services/api.js'
 import FarmerHeroSlider from '../../components/home/FarmerHeroSlider.jsx'
 import {
@@ -26,6 +27,7 @@ import {
 
 export const Home = () => {
   const { user } = useAuth()
+  const { t, currentLanguage } = useLanguage()
   const [stats, setStats] = useState({
     totalFarmers: 12,
     totalProducts: 18,
@@ -55,36 +57,36 @@ export const Home = () => {
   }, [])
 
   const categories = [
-    { name: 'Vegetables', icon: '🥦', image: '/products/tomato.jpg', count: 'Direct Field Crops', tag: 'Fresh Harvest' },
-    { name: 'Fruits', icon: '🍎', image: '/products/banana.jpg', count: 'Orchard Harvests', tag: 'Sun-Ripened' },
-    { name: 'Grains', icon: '🌾', image: '/products/wheat.jpg', count: 'Staple Harvests', tag: 'Direct Wholesale' },
-    { name: 'Spices', icon: '🌶️', image: '/products/turmeric.jpg', count: 'Aromatic & Pure', tag: 'GI Certified' },
-    { name: 'Pulses', icon: '🫘', image: '/products/chickpeas.jpg', count: 'High-Protein Yields', tag: 'Unpolished' },
+    { name: t('cat_vegetables', 'Vegetables'), filter: 'Vegetables', icon: '🥦', image: '/products/tomato.jpg', tag: 'Fresh Harvest' },
+    { name: t('cat_fruits', 'Fruits'), filter: 'Fruits', icon: '🍎', image: '/products/banana.jpg', tag: 'Sun-Ripened' },
+    { name: t('cat_grains', 'Grains'), filter: 'Grains', icon: '🌾', image: '/products/wheat.jpg', tag: 'Direct Wholesale' },
+    { name: t('cat_spices', 'Spices'), filter: 'Spices', icon: '🌶️', image: '/products/turmeric.jpg', tag: 'GI Certified' },
+    { name: t('cat_pulses', 'Pulses'), filter: 'Pulses', icon: '🫘', image: '/products/chickpeas.jpg', tag: 'High-Protein' },
   ]
 
   const farmerImpactStories = [
     {
-      title: 'Women-Led Organic Farming',
+      title: currentLanguage === 'ta' ? 'பெண்கள் வழிநடத்தும் இயற்கை விவசாயம்' : currentLanguage === 'te' ? 'మహిళా రైతుల సేంద్రీయ సాగు' : currentLanguage === 'kn' ? 'ಮಹಿಳಾ ನೇತೃತ್ವದ ಸಾವಯವ ಕೃಷಿ' : 'Women-Led Organic Farming',
       location: 'Nashik Valley, Maharashtra',
       farmer: 'Sunita Devi & Self-Help Group',
       image: '/images/slide_women_farmers.png',
-      desc: 'Direct market sales enabled 45+ women farmers to eliminate local broker markups and earn 35% higher net income on fresh greens.',
+      desc: currentLanguage === 'ta' ? 'நேரடி சந்தை விற்பனை மூலம் 45+ பெண் விவசாயிகள் இடைத்தரகர்கள் இன்றி 35% கூடுதல் லாபம் ஈட்டுகின்றனர்.' : 'Direct market sales enabled 45+ women farmers to eliminate local broker markups and earn 35% higher net income on fresh greens.',
       stat: '+35% Net Farmer Margin',
     },
     {
-      title: 'Smart Grain & Wheat Production',
+      title: currentLanguage === 'ta' ? 'ஸ்மார்ட் தானிய & கோதுமை உற்பத்தி' : currentLanguage === 'te' ? 'స్మార్ట్ ధాన్యం & గోధుమ ఉత్పత్తి' : currentLanguage === 'kn' ? 'ಸ್ಮಾರ್ಟ್ ಧಾನ್ಯ ಮತ್ತು ಗೋಧಿ ಉತ್ಪಾದನೆ' : 'Smart Grain & Wheat Production',
       location: 'Ludhiana, Punjab',
       farmer: 'Gurpreet Singh',
       image: '/images/slide_smart_farmer.png',
-      desc: 'Using KisanConnect real-time Mandi price matching to sell high-grade wheat harvests directly to commercial bakeries and retailers.',
+      desc: currentLanguage === 'ta' ? 'மண்டி விலை ஒப்பீடு மூலம் உயர்தர கோதுமையை பேக்கரிகள் மற்றும் சில்லறை வணிகர்களுக்கு நேரடியாக விற்க முடிகிறது.' : 'Using KisanConnect real-time Mandi price matching to sell high-grade wheat harvests directly to commercial bakeries and retailers.',
       stat: '100% Direct Settlement',
     },
     {
-      title: 'Certified Orchard Direct Sourcing',
+      title: currentLanguage === 'ta' ? 'சான்றளிக்கப்பட்ட தோட்ட விளைபொருட்கள்' : currentLanguage === 'te' ? 'సర్టిఫైడ్ తోట ఉత్పత్తులు' : currentLanguage === 'kn' ? 'ಪ್ರಮಾಣೀಕೃತ ತೋಟಗಾರಿಕಾ ಬೆಳೆಗಳು' : 'Certified Orchard Direct Sourcing',
       location: 'Wayanad, Kerala',
       farmer: 'Ananya Roy & Orchard Producers',
       image: '/images/slide_orchard_harvest.png',
-      desc: 'Direct harvest delivery of organic turmeric, pepper, and fresh fruits directly to urban consumers with verified GI origin seals.',
+      desc: currentLanguage === 'ta' ? 'ஆர்கானிக் மஞ்சள், மிளகு மற்றும் பழங்களை புவிசார் குறியீடுடன் நேரடியாக நுகர்வோருக்கு அனுப்புகிறோம்.' : 'Direct harvest delivery of organic turmeric, pepper, and fresh fruits directly to urban consumers with verified GI origin seals.',
       stat: 'Verified GI Harvest',
     },
   ]
@@ -92,38 +94,38 @@ export const Home = () => {
   const workflowSteps = [
     {
       step: '01',
-      title: 'Farmer Lists Harvest',
-      desc: 'Farmers publish crop quantity, unit rates, and harvest location directly from their field.',
+      title: currentLanguage === 'ta' ? 'விவசாயி பயிரை பட்டியலிடுதல்' : currentLanguage === 'te' ? 'రైతు పంట వివరాలు నమోదు' : 'Farmer Lists Harvest',
+      desc: currentLanguage === 'ta' ? 'பயிரின் அளவு, விலை மற்றும் பண்ணை இருப்பிடத்தை நேரடியாக பதிவு செய்கிறார்.' : 'Farmers publish crop quantity, unit rates, and harvest location directly from their field.',
       icon: Sprout,
     },
     {
       step: '02',
-      title: 'Quality & GI Inspection',
-      desc: 'Listing audited against Mandi grading and organic standards for certified quality badges.',
+      title: currentLanguage === 'ta' ? 'தர பரிசோதனை & GI தணிக்கை' : currentLanguage === 'te' ? 'నాణ್ಯత & GI ధృవీకరణ' : 'Quality & GI Inspection',
+      desc: currentLanguage === 'ta' ? 'மண்டி தரநிலைகள் மற்றும் ஆர்கானிக் அளவுகோல்கள் தணிக்கை செய்யப்பட்டு சான்றிதழ் அளிக்கப்படுகிறது.' : 'Listing audited against Mandi grading and organic standards for certified quality badges.',
       icon: ShieldCheck,
     },
     {
       step: '03',
-      title: 'Price Transparency',
-      desc: 'Buyers compare direct farm prices with local Mandi APMC rate benchmarks to verify savings.',
+      title: currentLanguage === 'ta' ? 'வெளிப்படையான விலை ஒப்பீடு' : currentLanguage === 'te' ? 'పారదర్శక ధరల పోలిక' : 'Price Transparency',
+      desc: currentLanguage === 'ta' ? 'வாங்குபவர்கள் மண்டி விலையுடன் ஒப்பிட்டு தங்கள் நேரடி சேமிப்பை உறுதி செய்யலாம்.' : 'Buyers compare direct farm prices with local Mandi APMC rate benchmarks to verify savings.',
       icon: Scale,
     },
     {
       step: '04',
-      title: 'Atomic Direct Order',
-      desc: 'Single-click order placement with race-condition-safe inventory deduction.',
+      title: currentLanguage === 'ta' ? 'நேரடி உடனடி ஆர்டர்' : currentLanguage === 'te' ? 'ప్రత్యక్ష తక్షణ ఆర్డర్' : 'Atomic Direct Order',
+      desc: currentLanguage === 'ta' ? 'ஒரே கிளிக்கில் நேரடி ஆர்டர் பதிவு மற்றும் பாதுகாப்பான இருப்பு குறைப்பு.' : 'Single-click order placement with race-condition-safe inventory deduction.',
       icon: ShoppingBag,
     },
     {
       step: '05',
-      title: 'End-to-End Tracking',
-      desc: 'Real-time multi-stage logistics from farm packaging to transit and delivery.',
+      title: currentLanguage === 'ta' ? 'முழு விநியோக கண்காணிப்பு' : currentLanguage === 'te' ? 'పూర్తి లాజిస్టిక్స్ ట్రాకింగ్' : 'End-to-End Tracking',
+      desc: currentLanguage === 'ta' ? 'பண்ணை பேக்கிங் முதல் உங்கள் வீட்டு வாசல் வரை நேரலை கண்காணிப்பு.' : 'Real-time multi-stage logistics from farm packaging to transit and delivery.',
       icon: Truck,
     },
     {
       step: '06',
-      title: 'Fresh Doorstep Arrival',
-      desc: 'Crops arrive fresh at the buyer’s doorstep with 0% middleman commission fee cuts.',
+      title: currentLanguage === 'ta' ? 'வீட்டு வாசலில் புதிய பயிர்கள்' : currentLanguage === 'te' ? 'ఇంటి వద్దకే తాజా పంట' : 'Fresh Doorstep Arrival',
+      desc: currentLanguage === 'ta' ? '0% இடைத்தரகர் கட்டணத்தில் புதிய விளைபொருட்கள் நேரடியாக வந்தடைகின்றன.' : 'Crops arrive fresh at the buyer’s doorstep with 0% middleman commission fee cuts.',
       icon: PackageCheck,
     },
   ]
@@ -141,7 +143,7 @@ export const Home = () => {
           </div>
           <div>
             <div className="text-2xl sm:text-3xl font-black text-slate-900">{stats.totalFarmers}+</div>
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-0.5">Farmers Connected</p>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-0.5">{t('stat_farmers')}</p>
           </div>
         </div>
 
@@ -151,7 +153,7 @@ export const Home = () => {
           </div>
           <div>
             <div className="text-2xl sm:text-3xl font-black text-slate-900">{stats.totalProducts}+</div>
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-0.5">Harvests Listed</p>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-0.5">{t('stat_harvests')}</p>
           </div>
         </div>
 
@@ -161,7 +163,7 @@ export const Home = () => {
           </div>
           <div>
             <div className="text-2xl sm:text-3xl font-black text-slate-900">{stats.totalOrders}+</div>
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-0.5">Orders Delivered</p>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-0.5">{t('stat_orders')}</p>
           </div>
         </div>
 
@@ -171,7 +173,7 @@ export const Home = () => {
           </div>
           <div>
             <div className="text-2xl sm:text-3xl font-black text-slate-900">{stats.verifiedProducts}+</div>
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-0.5">Verified Listings</p>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-0.5">{t('stat_verified')}</p>
           </div>
         </div>
       </section>
@@ -181,15 +183,15 @@ export const Home = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2">
           <div>
             <span className="text-xs font-bold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-              Fresh From The Soil
+              {t('cat_heading_badge')}
             </span>
-            <h2 className="text-3xl font-black text-slate-900 mt-2">Explore Harvest Categories</h2>
+            <h2 className="text-3xl font-black text-slate-900 mt-2">{t('cat_heading_title')}</h2>
           </div>
           <Link
             to="/marketplace"
             className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center space-x-1"
           >
-            <span>View all produce catalog</span>
+            <span>{t('cat_view_all')}</span>
             <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
@@ -216,9 +218,6 @@ export const Home = () => {
 
               <div className="absolute bottom-4 left-4 right-4 text-white">
                 <span className="text-xl mb-1 block">{cat.icon}</span>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-300 block">
-                  {cat.count}
-                </span>
                 <h3 className="text-lg font-black">{cat.name}</h3>
               </div>
             </Link>
@@ -301,15 +300,15 @@ export const Home = () => {
         <div className="lg:col-span-7 space-y-5">
           <div className="inline-flex items-center space-x-2 bg-emerald-800 border border-emerald-600 px-3 py-1 rounded-full text-xs font-bold text-amber-300 uppercase tracking-wider">
             <Scale className="w-3.5 h-3.5" />
-            <span>Mandi Price Benchmarking</span>
+            <span>{t('price_badge')}</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl font-black tracking-tight">
-            Compare Real Mandi Rates Against Platform Prices
+            {t('price_title')}
           </h2>
 
           <p className="text-emerald-100 text-sm leading-relaxed font-medium">
-            We track daily APMC wholesale Mandi commodity prices across Indian districts so buyers always know exact direct savings per kilogram.
+            {t('price_subtitle')}
           </p>
 
           <div className="flex flex-wrap gap-4 pt-2">
@@ -317,7 +316,7 @@ export const Home = () => {
               to="/price-insights"
               className="inline-flex items-center space-x-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-6 py-3.5 rounded-2xl transition-all shadow-md text-xs"
             >
-              <span>View Live Mandi Benchmarks</span>
+              <span>{t('hero_cta_mandi')}</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -342,7 +341,7 @@ export const Home = () => {
       <section id="how-it-works" className="space-y-8 bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-sm">
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <span className="text-xs font-bold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-            Frictionless Agri Trade
+            {t('tag_direct_trade')}
           </span>
           <h2 className="text-3xl font-black text-slate-900">How KisanConnect Operates</h2>
           <p className="text-sm text-slate-500 font-medium">
@@ -381,9 +380,9 @@ export const Home = () => {
 
       {/* 🌟 7. FINAL CTA BANNER */}
       <section className="bg-gradient-to-r from-emerald-800 via-teal-900 to-emerald-950 text-white rounded-[2.5rem] p-8 sm:p-12 text-center space-y-5 shadow-xl border border-emerald-700/60">
-        <h3 className="text-3xl sm:text-4xl font-black">Experience Direct Farm Trade Today</h3>
+        <h3 className="text-3xl sm:text-4xl font-black">{t('hero_title_1')} {t('hero_title_2')}</h3>
         <p className="text-sm text-emerald-100 max-w-xl mx-auto font-medium leading-relaxed">
-          Join thousands of farmers, retail buyers, and consumers transforming Indian agriculture through transparency and trust.
+          {t('hero_subtitle')}
         </p>
         <div className="pt-2 flex justify-center gap-4 flex-wrap">
           <Link
@@ -391,7 +390,7 @@ export const Home = () => {
             className="inline-flex items-center space-x-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-8 py-4 rounded-2xl transition-all shadow-lg text-sm transform hover:scale-105"
           >
             <ShoppingBag className="w-5 h-5" />
-            <span>Enter Marketplace</span>
+            <span>{t('hero_cta_explore')}</span>
           </Link>
         </div>
       </section>

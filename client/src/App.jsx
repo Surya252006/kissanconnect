@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext.jsx'
+import { LanguageProvider } from './context/LanguageContext.jsx'
 import Navbar from './components/layout/Navbar.jsx'
 import Footer from './components/layout/Footer.jsx'
 import ProtectedRoute from './components/common/ProtectedRoute.jsx'
@@ -27,93 +28,95 @@ import Verification from './pages/admin/Verification.jsx'
 function App() {
   return (
     <AuthProvider>
-      <div className="min-h-screen bg-[#F9FBF9] flex flex-col font-sans text-slate-900">
-        <Navbar />
-        <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 md:p-8">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/marketplace" element={<Marketplace />} />
-            <Route path="/products/:id" element={<ProductDetails />} />
-            <Route path="/price-insights" element={<PriceInsights />} />
-            <Route path="/ai-chat" element={<AIChatPage />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+      <LanguageProvider>
+        <div className="min-h-screen bg-[#F9FBF9] flex flex-col font-sans text-slate-900">
+          <Navbar />
+          <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 md:p-8">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/marketplace" element={<Marketplace />} />
+              <Route path="/products/:id" element={<ProductDetails />} />
+              <Route path="/price-insights" element={<PriceInsights />} />
+              <Route path="/ai-chat" element={<AIChatPage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
 
-            {/* Buyer Order Routes */}
-            <Route
-              path="/my-orders"
-              element={
-                <ProtectedRoute>
-                  <MyOrders />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/orders/:id"
-              element={
-                <ProtectedRoute>
-                  <OrderDetails />
-                </ProtectedRoute>
-              }
-            />
+              {/* Buyer Order Routes */}
+              <Route
+                path="/my-orders"
+                element={
+                  <ProtectedRoute>
+                    <MyOrders />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/orders/:id"
+                element={
+                  <ProtectedRoute>
+                    <OrderDetails />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Farmer Protected Routes */}
-            <Route
-              path="/farmer/products"
-              element={
-                <ProtectedRoute allowedRoles={['FARMER']}>
-                  <MyProducts />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/farmer/products/add"
-              element={
-                <ProtectedRoute allowedRoles={['FARMER']}>
-                  <AddProduct />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/farmer/products/edit/:id"
-              element={
-                <ProtectedRoute allowedRoles={['FARMER']}>
-                  <EditProduct />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/farmer/orders"
-              element={
-                <ProtectedRoute allowedRoles={['FARMER']}>
-                  <FarmerOrders />
-                </ProtectedRoute>
-              }
-            />
+              {/* Farmer Protected Routes */}
+              <Route
+                path="/farmer/products"
+                element={
+                  <ProtectedRoute allowedRoles={['FARMER']}>
+                    <MyProducts />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/farmer/products/add"
+                element={
+                  <ProtectedRoute allowedRoles={['FARMER']}>
+                    <AddProduct />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/farmer/products/edit/:id"
+                element={
+                  <ProtectedRoute allowedRoles={['FARMER']}>
+                    <EditProduct />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/farmer/orders"
+                element={
+                  <ProtectedRoute allowedRoles={['FARMER']}>
+                    <FarmerOrders />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Admin Protected Routes */}
-            <Route
-              path="/admin/dashboard"
-              element={
-                <ProtectedRoute allowedRoles={['ADMIN']}>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/verifications"
-              element={
-                <ProtectedRoute allowedRoles={['ADMIN']}>
-                  <Verification />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </main>
-        <Footer />
-        {/* 🤖 Global Floating AI Assistant */}
-        <KisanMitraChatWidget />
-      </div>
+              {/* Admin Protected Routes */}
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/verifications"
+                element={
+                  <ProtectedRoute allowedRoles={['ADMIN']}>
+                    <Verification />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </main>
+          <Footer />
+          {/* 🤖 Global Floating Multilingual AI Assistant */}
+          <KisanMitraChatWidget />
+        </div>
+      </LanguageProvider>
     </AuthProvider>
   )
 }
